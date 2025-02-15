@@ -31,18 +31,8 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          /* ListView(
-              children: [
-                ListTile(title: Text('Elemento 1')),
-                ListTile(title: Text('Elemento 2')),
-                ListTile(title: Text('Elemento 3')),
-              ],
-          ), */
-          children: [
-            TextField(
-              decoration: InputDecoration(labelText: 'ingresa tu nombre'),
-            ),
-          ],
+          
+          
         ),
       ),
     );
