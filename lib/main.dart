@@ -31,50 +31,13 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text('Elemento 1'),
-            Text('Elemento 2'),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
+          ListView(
               children: [
-                Text('En fila 1 '),
-                Text('En fila 2 '),
-                
+                ListTile(title: Text('Elemento 1')),
+                ListTile(title: Text('Elemento 2')),
+                ListTile(title: Text('Elemento 3')),
               ],
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SegundaPagina extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Segunda Página'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '¡Bienvenido a la segunda página!',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.green,
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Volver'),
-            ),
-          ],
+          ),
         ),
       ),
     );
