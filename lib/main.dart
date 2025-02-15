@@ -42,7 +42,7 @@ class MyHomePage extends StatelessWidget {
             TextField(
               decoration: InputDecoration(labelText: 'ingresa tu nombre'),
             ),
-          ]
+          ],
         ),
       ),
     );
