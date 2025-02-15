@@ -31,8 +31,18 @@ class MyHomePage extends StatelessWidget {
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          
-          
+          children:[
+            Text('texto que esta en columan'),
+            Text('texto que esta en columan'),
+            Text('texto que esta en col 3'),
+          ],
+          child: Raw(
+          children:[
+            Text('fila 1 '),
+            Text('fila 2 '),
+            Text('fila 3 ')
+          ],
+        ),
         ),
       ),
     );
