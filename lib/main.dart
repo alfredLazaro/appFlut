@@ -32,20 +32,16 @@ class MyHomePage extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
-              '¡Hola, Mundo!',
-              style: Theme.of(context).textTheme.displayLarge, // headline1 -> displayLarge
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SegundaPagina()),
-                );
-              },
-              child: Text('Ir a la segunda página'),
-            ),
+            Text('Elemento 1'),
+            Text('Elemento 2'),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('En fila 1 '),
+                Text('En fila 2 '),
+                
+              ],
+            )
           ],
         ),
       ),
