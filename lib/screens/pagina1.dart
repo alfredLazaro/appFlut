@@ -6,72 +6,24 @@ import 'dart:convert';
 class Pagina1 extends StatelessWidget{
     TextEditingController _controller = TextEditingController(); // Controlador de TextField
     String transcription = "";
-    Future<void> transcribeAudio(String audioUrl) async {
-      final String apiKey = dotenv.get('ASSEMBLYAI_API_KEY');
-      final String uploadUrl = 'http://api.assemblyai.com/v2/upload';
-      final String transcriptUrl = 'https://api.assemblyai.com/v2/transcript';
+    Future<String> fetchLlamaResponse(String prompt) async {
+      final url = Uri.parse('URL_LLAM');
+      final headers = {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ',
+      };
+      final body = jsonEncode({
+        'prompt': prompt,
+        'max_tokens': 50,
+      });
 
-      //subir el archivo de audio 
-      final uploadResponse = await http.post(
-        Uri.parse(uploadUrl),
-        headers: {
-          'authorization':apiKey,
-        },
-        body: await http.readBytes(Uri.parse(audioUrl)),
-      );
-      
-      if(uploadResponse.statusCode == 200){
-        final uploadData = jsonDecode(uploadResponse.body);
-        final String audioUrl = uploadData['upload_url'];
+      final response = await http.post(url, headers: headers, body: body);
 
-        // Solicitar la transcription
-        final transcriptResponse = await http.post(
-          Uri.parse(transcriptUrl),
-          headers: {
-            'authorization': apiKey,
-            'content-type' : 'application/json',
-          },
-          body: jsonEncode({
-            'audio_url': audioUrl,
-          }),
-        );
-
-        if(transcriptResponse.statusCode == 200){
-          final transcriptData = jsonDecode(transcriptResponse.body);
-          final String transcriptId = transcriptData['id'];
-
-          // Obtener la transcription completada
-          while (true){
-            final statusResponse = await http.get(
-              Uri.parse('$transcriptUrl/$transcriptId'),
-              headers: {
-                'authorization': apiKey,
-              },
-            );
-
-            final statusData = jsonDecode(statusResponse.body);
-            if (statusData['status']== 'completed'){
-              setState(() {
-                trasncription = statusData['text'];
-              });
-              break;
-            } else if(statusData['status']=='error'){
-              setState((){
-                transcription = 'Error al transcribir el audio';
-              });
-              break;
-            }
-            await Future.delayed(Duration(seconds: 2));
-          }
-        }else{
-          setState(() {
-            transcription = 'Error al solicitar la transcription';
-          });
-        }
-      }else {
-        setState( () {
-          transcription = 'Error al subir el archivo de audio';
-        });
+      if(response.statusCode == 200){
+        final responseData = jsonDecode(response.body);
+        return responseData['choices'][0]['text']; // ajusta segun la estructura de la respuesta
+      } else {
+        throw Exception('Failed to load response from LLaMA API');
       }
     }
     @override
@@ -103,6 +55,8 @@ class Pagina1 extends StatelessWidget{
             ElevatedButton(
               onPressed: () {
                 print('texto ingresado: ${_controller.text}'); //Obtiene el texto y lo imprime
+                String response = await fetchLlamaResponse("Hola, ¿como estas?");
+                print(response);
               },
               child: Text('Presioname'),
             ),
