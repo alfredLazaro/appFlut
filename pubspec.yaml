@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  http: ^0.13.3 # Para hacer solicitudes HTTP
   flutter_dotenv: ^5.0.2 # creo que es para las variables de entorno
 
   # The following adds the Cupertino Icons font to your application.
