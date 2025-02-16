@@ -3,7 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/pagina1.dart';
 import 'screens/pagina2.dart';// importa la pagina 2
 void main() async {
-  await dotenv.load(fileName: ".env"); //Cargar variables de entorno
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await dotenv.load(fileName: "assets/.env"); //Cargar variables de entorno
   runApp(MyApp());
 }
 

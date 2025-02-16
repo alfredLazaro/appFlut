@@ -7,7 +7,7 @@ class Pagina1 extends StatelessWidget{
     TextEditingController _controller = TextEditingController(); // Controlador de TextField
     String transcription = "";
     Future<String> fetchLlamaResponse(String prompt) async {
-      final url = Uri.parse(dotenv.env['URL_LLAM']!);
+      final url = Uri.parse(dotenv.env['URL_LLAM2']!);
       final apiKey = dotenv.env['API_KEY']!;
       final headers = {
         'Content-Type': 'application/json',
@@ -24,7 +24,7 @@ class Pagina1 extends StatelessWidget{
         final responseData = jsonDecode(response.body);
         return responseData['choices'][0]['text']; // ajusta segun la estructura de la respuesta
       } else {
-        throw Exception('Failed to load response from LLaMA API');
+        throw Exception('Failed to load response from LLaMA API $response');
       }
     }
 
