@@ -27,58 +27,61 @@ class Pagina1 extends StatelessWidget{
         throw Exception('Failed to load response from LLaMA API');
       }
     }
+
     @override
     Widget build(BuildContext context){
         return Scaffold(
-            appBar: AppBar(
-        title: Text('Página Principal'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            Text('Palabra en ingles que no entiendes'),
-            TextField(
-              controller: _controller, //Asociamos el controlador al Textfield
-              decoration: InputDecoration(
-                labelText: 'Escribe la palabra',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            Container(
-              padding: EdgeInsets.all(20),
-              margin: EdgeInsets.symmetric(horizontal: 15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                
-              ),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                print('texto ingresado: ${_controller.text}'); //Obtiene el texto y lo imprime
-                String response = await fetchLlamaResponse("Hola, ¿como estas?");
-                print(response);
-              },
-              child: Text('Presioname'),
-            ),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal:19),
+          appBar: AppBar(
+            title: Text('Página Principal'),
+          ),
+          body: Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:[
+                Text('Palabra en ingles que no entiendes'),
+                TextField(
+                  controller: _controller, //Asociamos el controlador al Textfield
+                  decoration: InputDecoration(
+                    labelText: 'Escribe la palabra',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(20),
+                  margin: EdgeInsets.symmetric(horizontal: 15),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () async {//Marca el metodo como async
+                    print('texto ingresado: ${_controller.text}'); //Obtiene el texto y lo imprime
+                    
+                    try{  
+                      String response = await fetchLlamaResponse("Hola, ¿como estas?");
+                      print('Texto ingresado: $response');
+                    } catch (e) {
+                      print('Error al llamar a la API: $e');
+                    }
+                  },
+                  child: Text('Presioname'),
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context)=>Pagina2()),
+                    );
+                    print('Boton sig Pagina');
+                  },
+                  child: Text('sig pagina'),
+                ),
+              ],
 
             ),
-            ElevatedButton(
-              onPressed: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context)=>Pagina2()),
-                );
-                print('Boton sig Pagina');
-              },
-              child: Text('sig pagina'),
-            ),
-          ],
-
-        ),
-      ),
+          ),
         );
     }
 }
