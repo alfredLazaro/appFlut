@@ -7,10 +7,11 @@ class Pagina1 extends StatelessWidget{
     TextEditingController _controller = TextEditingController(); // Controlador de TextField
     String transcription = "";
     Future<String> fetchLlamaResponse(String prompt) async {
-      final url = Uri.parse('URL_LLAM');
+      final url = Uri.parse(dotenv.env['URL_LLAM']!);
+      final apiKey = dotenv.env['API_KEY']!;
       final headers = {
         'Content-Type': 'application/json',
-        'Authorization': 'Bearer ',
+        'Authorization': 'Bearer $apiKey',
       };
       final body = jsonEncode({
         'prompt': prompt,
