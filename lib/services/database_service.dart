@@ -17,7 +17,7 @@ class DatabaseService {
         return _database!;
     }
     Future<Database> _initDatabase() async {
-        final dbPath = await get DatabasesPath();
+        final dbPath = await getDatabasesPath();
         final path = join(dbPath, 'pfIng.db');
 
         return await openDatabase(

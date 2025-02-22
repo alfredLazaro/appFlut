@@ -4,9 +4,9 @@ class PfIng{
     final String sentence;
 
     PfIng({
-        require this.id,
-        require this.word,
-        require this.sentence,
+        required this.id,
+        required this.word,
+        required this.sentence,
     });
 
     factory PfIng.fromMap(Map<String, dynamic> map){
