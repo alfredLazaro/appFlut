@@ -3,6 +3,9 @@ import 'pagina2.dart'; //importa la pantalla 2
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../services/database_service.dart';
+import '../models/pf_ing_model.dart';
+
 class Pagina1 extends StatelessWidget{
     TextEditingController _controller = TextEditingController(); // Controlador de TextField
     String transcription = "";

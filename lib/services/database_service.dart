@@ -50,7 +50,7 @@ class DatabaseService {
         final db = await database;
         final List<Map<String, dynamic>> maps = await db.query('pfIng');
 
-        return List.generate(maps.lenght, (i){
+        return List.generate(maps.length, (i){
             return PfIng.fromMap(maps[i]);
         });
     }
