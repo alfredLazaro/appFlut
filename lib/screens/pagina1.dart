@@ -45,13 +45,13 @@ class _Pagina1State extends State<Pagina1> {
       appBar: AppBar(
         title: Text('Página Principal'),
         actions: [
-          // Botón para ir a la segunda página
+          // Botón en el AppBar para ir a la segunda página
           IconButton(
             icon: Icon(Icons.navigate_next),
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => Pagina2()),
+                MaterialPageRoute(builder: (context) => Pagina2(words: _words)),
               );
             },
           ),
@@ -76,6 +76,17 @@ class _Pagina1State extends State<Pagina1> {
             ElevatedButton(
               onPressed: _saveWord, // Guardar en SQLite
               child: Text('Guardar Palabra'),
+            ),
+            SizedBox(height: 10),
+            // Botón adicional para ir a la segunda página
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Pagina2(words: _words)),
+                );
+              },
+              child: Text('Ir a la segunda página'),
             ),
             SizedBox(height: 20),
             Expanded(
