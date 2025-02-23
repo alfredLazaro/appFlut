@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'pagina2.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import '../services/database_service.dart';
-import '../models/pf_ing_model.dart';
+import 'pagina2.dart'; // Importa la segunda página
+import '../services/database_service.dart'; // Importa el servicio de base de datos
+import '../models/pf_ing_model.dart'; // Importa el modelo
 
 class Pagina1 extends StatefulWidget {
   @override
@@ -21,6 +18,7 @@ class _Pagina1State extends State<Pagina1> {
     _loadWords(); // Cargar palabras al iniciar
   }
 
+  // Cargar palabras desde la base de datos
   Future<void> _loadWords() async {
     final words = await DatabaseService().getAllPfIng();
     setState(() {
@@ -28,6 +26,7 @@ class _Pagina1State extends State<Pagina1> {
     });
   }
 
+  // Guardar una nueva palabra en la base de datos
   Future<void> _saveWord() async {
     String word = _controller.text;
     if (word.isEmpty) return;
@@ -36,14 +35,28 @@ class _Pagina1State extends State<Pagina1> {
     PfIng newWord = PfIng(id: 3, word: word, sentence: "Ejemplo de uso.");
     await DatabaseService().insertPfIng(newWord);
 
-    _controller.clear();
+    _controller.clear(); // Limpiar el TextField
     _loadWords(); // Recargar la lista después de guardar
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Página Principal')),
+      appBar: AppBar(
+        title: Text('Página Principal'),
+        actions: [
+          // Botón para ir a la segunda página
+          IconButton(
+            icon: Icon(Icons.navigate_next),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Pagina2()),
+              );
+            },
+          ),
+        ],
+      ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
