@@ -14,6 +14,7 @@ class DatabaseService {
     Future<Database> get database async {
         if (_database != null) return _database!;
         _database =await _initDatabase();
+        print("base de datos creada correctamente");
         return _database!;
     }
     Future<Database> _initDatabase() async {
@@ -44,6 +45,7 @@ class DatabaseService {
             pfIng.toMap(),
             conflictAlgorithm: ConflictAlgorithm.replace,
         );
+        print("palabra insertada");
     }
 
     Future<List<PfIng>> getAllPfIng() async {

@@ -1,10 +1,10 @@
 class PfIng{
-    final int id;
+    final int? id;
     final String word;
     final String sentence;
 
     PfIng({
-        required this.id,
+        this.id,
         required this.word,
         required this.sentence,
     });
@@ -19,7 +19,6 @@ class PfIng{
 
     Map<String, dynamic> toMap(){
         return {
-            'id':id,
             'word':word,
             'sentence':sentence,
         };

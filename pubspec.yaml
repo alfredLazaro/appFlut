@@ -33,6 +33,7 @@ dependencies:
   http: ^0.13.3 # Para hacer solicitudes HTTP
   flutter_dotenv: ^5.0.2 # creo que es para las variables de entorno
   sqflite: ^2.0.0+4
+  path_provider: ^2.0.11
   path: ^1.8.0
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

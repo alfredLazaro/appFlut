@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'pagina2.dart'; // Importa la segunda página
 import '../services/database_service.dart'; // Importa el servicio de base de datos
 import '../models/pf_ing_model.dart'; // Importa el modelo
-
+import 'package:flutter/services.dart'; //Necesario para Clipboard
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -10,6 +10,7 @@ class Pagina1 extends StatefulWidget {
 
 class _Pagina1State extends State<Pagina1> {
   TextEditingController _controller = TextEditingController();
+  TextEditingController _creado = TextEditingController();
   List<PfIng> _words = []; // Lista para almacenar palabras
 
   @override
@@ -32,13 +33,23 @@ class _Pagina1State extends State<Pagina1> {
     if (word.isEmpty) return;
 
     // Crear el objeto y guardarlo en SQLite
-    PfIng newWord = PfIng(id: 3, word: word, sentence: "Ejemplo de uso.");
+    PfIng newWord = PfIng( 
+      word: word, 
+      sentence: "dame una oracion con el uso '$word' en ingles que contenga menos de 50 letras");
     await DatabaseService().insertPfIng(newWord);
 
     _controller.clear(); // Limpiar el TextField
     _loadWords(); // Recargar la lista después de guardar
   }
 
+  Future<void> _updSenten() async {
+    String sentence= _creado.text;
+    if(sentence.isEmpty) return;
+    PfIng newWord = PfIng(
+      sentence: sentence,
+    );
+    await DatabaseService().//no se como pasarle el id de mi pal actual
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -96,16 +107,48 @@ class _Pagina1State extends State<Pagina1> {
                   return ListTile(
                     title: Text(_words[index].word),
                     subtitle: Text(_words[index].sentence),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete),
-                      onPressed: () async {
-                        await DatabaseService().deletePfIng(_words[index].id!);
-                        _loadWords();
-                      },
-                    ),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min, // Asegura que la flia ocupa el minimo espacion posible
+                      children: [
+                        // Boton de copiar
+                        IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: _words[index].sentence));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Texto copiado al portapeles")),
+                            );
+                          },
+                        ),
+                        //boton de borrar
+                        IconButton(
+                          icon: Icon(Icons.delete),
+                          onPressed: () async {
+                            await DatabaseService().deletePfIng(_words[index].id!);
+                            _loadWords();
+                          },
+                        ),
+                      ],
+                  )
                   );
                 },
               ),
+            ),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: _creado,
+                decoration: InputDecoration(
+                  labelText: 'Escribe la sentence a guardar',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed;() {},
+              child: Text('Guardar sentence'),
             ),
           ],
         ),
