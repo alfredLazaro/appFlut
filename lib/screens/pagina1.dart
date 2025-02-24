@@ -35,7 +35,9 @@ class _Pagina1State extends State<Pagina1> {
     // Crear el objeto y guardarlo en SQLite
     PfIng newWord = PfIng( 
       word: word, 
-      sentence: "dame una oracion con el uso '$word' en ingles que contenga menos de 50 letras");
+      sentence: "dame una oracion con el uso '$word' en ingles que contenga menos de 50 letras",
+      learn: 0,
+      );
     await DatabaseService().insertPfIng(newWord);
 
     _controller.clear(); // Limpiar el TextField
@@ -46,12 +48,14 @@ class _Pagina1State extends State<Pagina1> {
     String sentence= _creado.text;
     if(sentence.isEmpty) return;
     //busca el objeto actual
-    PfIng? currentWrd= _words.firstWhere((word) => word.id == id, orElse: ()=>PfIng(id:id, word: '', sentence:''));
-    if(currentWrd.IsEmpty) return;
+    PfIng? currentWrd= _words.firstWhere((word) => word.id == id, orElse: ()=>PfIng(id:id, word: '', sentence:'',learn:0));
+    if(currentWrd.word.isEmpty) return;
+    //if(currentWrd.learn.isEmpty) return;
     PfIng newWord = PfIng(
       id: id,
       word: currentWrd.word,
       sentence: sentence,
+      learn: currentWrd.learn,
     );
     await DatabaseService().updatePfIng(newWord);
 
