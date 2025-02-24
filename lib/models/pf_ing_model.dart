@@ -3,12 +3,16 @@ class PfIng{
     final String word;
     final String sentence;
     int learn;
+    String createdAt;
+    String updatedAt;
 
     PfIng({
         this.id,
         required this.word,
         required this.sentence,
         required this.learn,
+        required this.createdAt,
+        required this.updatedAt,
     });
 
     factory PfIng.fromMap(Map<String, dynamic> map){
@@ -17,6 +21,8 @@ class PfIng{
             word: map['word'],
             sentence: map['sentence'],
             learn: map['learn'],
+            createdAt: map['created_at'],
+            updatedAt: map['updated_at'],
         );
     }
 
@@ -25,6 +31,8 @@ class PfIng{
             'word':word,
             'sentence':sentence,
             'learn':learn,
+            'created_at': createdAt,
+            'updated_at': updatedAt,
         };
     }
 }

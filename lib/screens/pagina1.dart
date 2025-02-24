@@ -37,6 +37,8 @@ class _Pagina1State extends State<Pagina1> {
       word: word, 
       sentence: "dame una oracion con el uso '$word' en ingles que contenga menos de 50 letras",
       learn: 0,
+      createdAt: DateTime.now().toIso8601String(),
+      updatedAt: DateTime.now().toIso8601String(),
       );
     await DatabaseService().insertPfIng(newWord);
 

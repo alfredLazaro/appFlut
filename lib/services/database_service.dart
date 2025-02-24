@@ -35,7 +35,9 @@ class DatabaseService {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 word TEXT NOT NULL,
                 sentence TEXT NOT NULL,
-                learn INTEGER NOT NULL DEFAULT 0
+                learn INTEGER NOT NULL DEFAULT 0,
+                created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+                updated_at TEXT DEFAULT CURRENT_TIMESTAMP
             )
         ''');
     }
@@ -69,6 +71,7 @@ class DatabaseService {
 
     Future<void> updatePfIng(PfIng pfIng) async {
         final db = await database;
+        word.updatedAt = DateTime.now().toIso8601String();
         await db.update(
             'pfIng',
             pfIng.toMap(),
