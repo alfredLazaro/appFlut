@@ -25,8 +25,8 @@ class _Pagina2State extends State<Pagina2> {
   @override
   Widget build(BuildContext context) {
     // Filtrar palabras en dos categorías
-    List<PfIng> notLearnedWords = widget.words.where((word) => word.learn < 2).toList();
-    List<PfIng> learnedWords = widget.words.where((word) => word.learn >= 2).toList();
+    List<PfIng> notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
+    List<PfIng> learnedWords = widget.words.where((word) => word.learn >= 3).toList();
 
     return DefaultTabController(
       length: 2,
@@ -55,6 +55,18 @@ class _Pagina2State extends State<Pagina2> {
     if (words.isEmpty) {
       return Center(child: Text('No hay palabras en esta sección.'));
     }
+
+    // Ordena las palabras, moviendo las que tienen 'learn' == 1 al final de la lista
+    words.sort((a, b) {
+      if (a.learn == 1 && b.learn != 1) {
+        return 1; // Mover la palabra 'a' al final
+      } else if (a.learn != 1 && b.learn == 1) {
+        return -1; // Mover la palabra 'b' al final
+      } else {
+        return 0; // Mantener el orden si ambos tienen el mismo valor de 'learn'
+      }
+    });
+    
     return ListView.builder(
       itemCount: words.length,
       itemBuilder: (context, index) {
@@ -94,7 +106,7 @@ class _Pagina2State extends State<Pagina2> {
                 ),
                 SizedBox(height: 5),
                 Text(
-                  'Estado: ${word.learn >= 2 ? "Aprendido ✅" : "No Aprendido ❌"}',
+                  'Estado: ${word.learn >= 3 ? "Aprendido ✅" : "No Aprendido ❌"}',
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
               ],

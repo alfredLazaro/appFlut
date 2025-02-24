@@ -71,7 +71,7 @@ class DatabaseService {
 
     Future<void> updatePfIng(PfIng pfIng) async {
         final db = await database;
-        word.updatedAt = DateTime.now().toIso8601String();
+        pfIng.updatedAt = DateTime.now().toIso8601String();
         await db.update(
             'pfIng',
             pfIng.toMap(),

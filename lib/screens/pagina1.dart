@@ -35,7 +35,7 @@ class _Pagina1State extends State<Pagina1> {
     // Crear el objeto y guardarlo en SQLite
     PfIng newWord = PfIng( 
       word: word, 
-      sentence: "dame una oracion con el uso '$word' en ingles que contenga menos de 50 letras",
+      sentence: "Dame una oracion con el uso '$word' en ingles que contenga menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
       learn: 0,
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
@@ -50,7 +50,10 @@ class _Pagina1State extends State<Pagina1> {
     String sentence= _creado.text;
     if(sentence.isEmpty) return;
     //busca el objeto actual
-    PfIng? currentWrd= _words.firstWhere((word) => word.id == id, orElse: ()=>PfIng(id:id, word: '', sentence:'',learn:0));
+    PfIng? currentWrd= _words.firstWhere(
+      (word) => word.id == id, 
+      orElse: ()=>PfIng(id:id, word: '', sentence:'',learn:0,createdAt: DateTime.now().toIso8601String(), // Si no existe, usa la fecha actual
+      updatedAt: DateTime.now().toIso8601String(),));
     if(currentWrd.word.isEmpty) return;
     //if(currentWrd.learn.isEmpty) return;
     PfIng newWord = PfIng(
@@ -58,6 +61,8 @@ class _Pagina1State extends State<Pagina1> {
       word: currentWrd.word,
       sentence: sentence,
       learn: currentWrd.learn,
+      createdAt: currentWrd.createdAt, // Mantiene la fecha original
+      updatedAt: DateTime.now().toIso8601String(), // Actualiza la fecha de modificación
     );
     await DatabaseService().updatePfIng(newWord);
 
