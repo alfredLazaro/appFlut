@@ -2,7 +2,7 @@ class PfIng{
     final int? id;
     final String word;
     final String sentence;
-    final int learn;
+    int learn;
 
     PfIng({
         this.id,
