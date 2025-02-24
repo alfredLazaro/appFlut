@@ -42,13 +42,21 @@ class _Pagina1State extends State<Pagina1> {
     _loadWords(); // Recargar la lista después de guardar
   }
 
-  Future<void> _updSenten() async {
+  Future<void> _updSenten(int id) async {
     String sentence= _creado.text;
     if(sentence.isEmpty) return;
+    //busca el objeto actual
+    PfIng? currentWrd= _words.firstWhere((word) => word.id == id, orElse: ()=>PfIng(id:id, word: '', sentence:''));
+    if(currentWrd.IsEmpty) return;
     PfIng newWord = PfIng(
+      id: id,
+      word: currentWrd.word,
       sentence: sentence,
     );
-    await DatabaseService().//no se como pasarle el id de mi pal actual
+    await DatabaseService().updatePfIng(newWord);
+
+    _creado.clear(); //limpiar el textfield
+    _loadWords(); //reacargar la lista despues de actualizar
   }
   @override
   Widget build(BuildContext context) {
@@ -110,6 +118,36 @@ class _Pagina1State extends State<Pagina1> {
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min, // Asegura que la flia ocupa el minimo espacion posible
                       children: [
+                        //boton editar
+                        IconButton(
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            _creado.text = _words[index].sentence;//Cargar el texto actual en el campo
+                            showDialog(
+                              context: context,
+                              builder: (context){
+                                return AlertDialog(
+                                  title: Text("Editar Sentence"),
+                                  content: TextField(
+                                    controller: _creado,
+                                    decoration: InputDecoration(
+                                      labelText: "Nueva sentence",
+                                    ),
+                                  ),
+                                  actions: [
+                                    ElevatedButton(
+                                      onPressed: (){
+                                        _updSenten(_words[index].id!); //llamar a la actualizacion
+                                        Navigator.of(context).pop(); // Cerrar el dialogo
+                                      },
+                                      child: Text("Actualizar"),
+                                    ),
+                                  ],
+                                );
+                              }
+                            );
+                          }
+                        ),
                         // Boton de copiar
                         IconButton(
                           icon: Icon(Icons.copy),
@@ -146,10 +184,7 @@ class _Pagina1State extends State<Pagina1> {
               ),
             ),
             SizedBox(height: 20),
-            ElevatedButton(
-              onPressed;() {},
-              child: Text('Guardar sentence'),
-            ),
+            
           ],
         ),
       ),

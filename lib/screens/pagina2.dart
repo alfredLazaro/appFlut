@@ -20,8 +20,8 @@ class Pagina2 extends StatelessWidget {
                 itemCount: words.length,
                 itemBuilder: (context, index) {
                   return ListTile(
-                    title: Text(words[index].word),
-                    subtitle: Text(words[index].sentence),
+                    title: Text(words[index].sentence),
+                    subtitle: Text(words[index].word),
                   );
                 },
               ),
