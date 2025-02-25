@@ -13,7 +13,6 @@ class Pagina2 extends StatefulWidget {
 class _Pagina2State extends State<Pagina2> {
   FlutterTts flutterTts=FlutterTts();
   final DatabaseService _dbService = DatabaseService();
-
   //funcion de audio
   Future<void> speak(String text) async{
     try{

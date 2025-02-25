@@ -4,6 +4,9 @@ import '../services/database_service.dart'; // Importa el servicio de base de da
 import '../models/pf_ing_model.dart'; // Importa el modelo
 import 'package:flutter/services.dart'; //Necesario para Clipboard
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:record/record.dart';
+import 'package:path_provider/path_provider.dart';
+import '../services/assembly_ai_service.dart'; //importamos el servicio 
 
 class Pagina1 extends StatefulWidget {
   @override
@@ -15,13 +18,45 @@ class _Pagina1State extends State<Pagina1> {
   TextEditingController _creado = TextEditingController();
   List<PfIng> _words = []; // Lista para almacenar palabras
 
+  final _recoder = Record();
+  String _audioPath;//este es el path de la ruta del archivo grabado
+
+
+  //el servicio assembly
+  final AssemblyAIService assemblyAI = AssemblyAIService();
+  
+
   @override
   void initState() {
     super.initState();
     _loadWords(); // Cargar palabras al iniciar
   }
-  //seccion de audio de las palabras
- 
+  //llamada a la api
+  
+  //metodo para la grabacion de audio
+  Future<void> _startRecording() async {
+    try{
+      if (await _recorder.hasPermission()){
+        Directory tempDir = await getTemporaryDirectory();
+        String filePath = '${tempDir.path}/recorded_audio.m4a';
+
+        await _recorder.start(
+          path: filePath,
+          encoder: AudioEncoder.aacLc, // Codec de compresion
+          bitRate: 128000, // Calidad de grabacion
+          samplingRate: 44100,
+        );
+
+        setState((){
+          _audioPath = fliePath;
+        });
+      } else {
+        print("No tienes permisos para grabar audio.");
+      }
+    }catch(e){
+      print("Error al iniciar la grabacion: $e");
+    }
+  }
 
   // Cargar palabras desde la base de datos
   Future<void> _loadWords() async {
