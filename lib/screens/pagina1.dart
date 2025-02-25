@@ -1,3 +1,4 @@
+import 'dart:io';//para el manejo de directory
 import 'package:flutter/material.dart';
 import 'pagina2.dart'; // Importa la segunda página
 import '../services/database_service.dart'; // Importa el servicio de base de datos
@@ -18,13 +19,13 @@ class _Pagina1State extends State<Pagina1> {
   TextEditingController _creado = TextEditingController();
   List<PfIng> _words = []; // Lista para almacenar palabras
 
-  final _recoder = Record();
-  String _audioPath;//este es el path de la ruta del archivo grabado
+  final _recorder = Record();
+  String _audioPath="";//este es el path de la ruta del archivo grabado
 
 
   //el servicio assembly
   final AssemblyAIService assemblyAI = AssemblyAIService();
-  
+
 
   @override
   void initState() {
@@ -38,7 +39,7 @@ class _Pagina1State extends State<Pagina1> {
     try{
       if (await _recorder.hasPermission()){
         Directory tempDir = await getTemporaryDirectory();
-        String filePath = '${tempDir.path}/recorded_audio.m4a';
+        String filePath = '${tempDir.path}/recorded_audio.mp3';
 
         await _recorder.start(
           path: filePath,
@@ -48,13 +49,25 @@ class _Pagina1State extends State<Pagina1> {
         );
 
         setState((){
-          _audioPath = fliePath;
+          _audioPath = filePath;
         });
       } else {
         print("No tienes permisos para grabar audio.");
       }
     }catch(e){
       print("Error al iniciar la grabacion: $e");
+    }
+  }
+
+  Future<void> _stopRecording() async {
+    try {
+      final path = await _recorder.stop();
+      setState(() {
+        _audioPath = path; // Guardamos la ruta del archivo
+      });
+      print("Audio guardado en: $_audioPath");
+    } catch (e) {
+      print("Error al detener la grabación: $e");
     }
   }
 
@@ -146,6 +159,17 @@ class _Pagina1State extends State<Pagina1> {
               onPressed: _saveWord, // Guardar en SQLite
               child: Text('Guardar Palabra'),
             ),
+            SizedBox(height: 8),
+            ElevatedButton(
+              onPressed: _startRecording,
+              child: Text('grabar Palabra'),
+            ),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _stopRecording,
+              child: Text('detener Palabra'),
+            ),
+
             SizedBox(height: 10),
             // Botón adicional para ir a la segunda página
             ElevatedButton(
