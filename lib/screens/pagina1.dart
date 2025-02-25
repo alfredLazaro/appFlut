@@ -3,6 +3,8 @@ import 'pagina2.dart'; // Importa la segunda página
 import '../services/database_service.dart'; // Importa el servicio de base de datos
 import '../models/pf_ing_model.dart'; // Importa el modelo
 import 'package:flutter/services.dart'; //Necesario para Clipboard
+import 'package:flutter_tts/flutter_tts.dart';
+
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -18,6 +20,8 @@ class _Pagina1State extends State<Pagina1> {
     super.initState();
     _loadWords(); // Cargar palabras al iniciar
   }
+  //seccion de audio de las palabras
+ 
 
   // Cargar palabras desde la base de datos
   Future<void> _loadWords() async {
@@ -35,7 +39,7 @@ class _Pagina1State extends State<Pagina1> {
     // Crear el objeto y guardarlo en SQLite
     PfIng newWord = PfIng( 
       word: word, 
-      sentence: "Dame una oracion con el uso '$word' en ingles que contenga menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
+      sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
       learn: 0,
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
@@ -133,7 +137,7 @@ class _Pagina1State extends State<Pagina1> {
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            _creado.text = _words[index].sentence;//Cargar el texto actual en el campo
+                            _creado.text = '';//Cargar el texto actual en el campo
                             showDialog(
                               context: context,
                               builder: (context){
@@ -181,17 +185,6 @@ class _Pagina1State extends State<Pagina1> {
                   )
                   );
                 },
-              ),
-            ),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: TextField(
-                controller: _creado,
-                decoration: InputDecoration(
-                  labelText: 'Escribe la sentence a guardar',
-                  border: OutlineInputBorder(),
-                ),
               ),
             ),
             SizedBox(height: 20),

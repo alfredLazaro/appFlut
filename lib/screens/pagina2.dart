@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import '../models/pf_ing_model.dart';
 import '../services/database_service.dart'; // Importa DatabaseService
-
+import 'package:flutter_tts/flutter_tts.dart';
 class Pagina2 extends StatefulWidget {
   final List<PfIng> words;
-
   Pagina2({required this.words});
 
   @override
@@ -12,7 +11,20 @@ class Pagina2 extends StatefulWidget {
 }
 
 class _Pagina2State extends State<Pagina2> {
+  FlutterTts flutterTts=FlutterTts();
   final DatabaseService _dbService = DatabaseService();
+
+  //funcion de audio
+  Future<void> speak(String text) async{
+    try{
+      await flutterTts.setLanguage("en-US");
+      await flutterTts.setPitch(1.0);
+      await flutterTts.setSpeechRate(0.5);
+      await flutterTts.speak(text);
+    } catch (e) {
+      print("Error al leer el texto: $e");
+    }
+  }
 
   // Función para actualizar el estado de aprendizaje de la palabra
   Future<void> _updateLearnStatus(PfIng word, int value) async {
@@ -79,14 +91,40 @@ class _Pagina2State extends State<Pagina2> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  word.sentence,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                // Palabra con icono de parlante
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        word.sentence,
+                        style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold),
+                        overflow: TextOverflow.ellipsis, // Opcional: Agrega "..." si es muy largo
+                        maxLines: 3, // Limita a 2 líneas
+                      ),
+                    ),
+                    SizedBox(width:10),
+                    IconButton(
+                      icon: Icon(Icons.volume_up),
+                      onPressed: ()=> speak(word.sentence),//reproduce la palabra
+                    ),
+                  ],
                 ),
                 SizedBox(height: 5),
-                Text(
-                  word.word,
-                  style: TextStyle(fontSize: 16, color: Colors.grey[700]),
+                // icono
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [    
+                    Text(
+                      word.word,
+                      style: TextStyle(fontSize: 15, color: Colors.grey[700]),
+                    ),
+                    SizedBox(width:10),
+                    IconButton(
+                      icon: Icon(Icons.volume_up),
+                      onPressed: ()=> speak(word.word),
+                    ),
+                  ],
                 ),
                 SizedBox(height: 10),
                 Row(
@@ -94,12 +132,16 @@ class _Pagina2State extends State<Pagina2> {
                   children: [
                     ElevatedButton(
                       onPressed: () => _updateLearnStatus(word, word.learn + 1),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.black),
                       child: Text('Aprendido'),
                     ),
                     ElevatedButton(
                       onPressed: () => _updateLearnStatus(word, 0),
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white),
                       child: Text('No Aprendido'),
                     ),
                   ],
