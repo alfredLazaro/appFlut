@@ -78,10 +78,10 @@ class _Pagina1State extends State<Pagina1> {
       }else{
         print("se detuvo por que path es null.");
       }
-      /* String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
+      String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
       setState(() {
         _controller.text = transcrit!;
-      }); */
+      });
     } catch (e) {
       print("Error al detener la grabación: $e");
     }
