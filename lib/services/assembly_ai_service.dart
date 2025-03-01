@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AssemblyAIService {
-    final String apiKey = '';
-    final String transcriptUrl = '';
+    final String apiKey = '57d4ef538f9147e7bfffe39a8a4c5d69';
+    final String transcriptUrl = 'https://assembly.ai/wildfires.mp3';
 
     Future<String?> transcribeAudio(String audioUrl) async {
         try {

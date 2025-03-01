@@ -8,7 +8,7 @@ import 'package:flutter_tts/flutter_tts.dart';
 import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
-
+import '../services/assembly_ai_service.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -22,6 +22,8 @@ class _Pagina1State extends State<Pagina1> {
   final _recorder = Record(); // Usa el método Record() para obtener una instancia
   String _audioPath = "";
   bool _isRecording = false;
+  final TextEditingController _transcripcion= TextEditingController();
+  final AssemblyAIService _assemblyServ= AssemblyAIService();
   @override
   void initState() {
     super.initState();
@@ -68,12 +70,26 @@ class _Pagina1State extends State<Pagina1> {
       setState(() {
         _isRecording = false;
       });
-      print("Audio guardado en: $_audioPath");
+      if(path != null){
+        setState(() {
+          _audioPath = path;
+        });
+        print("Audio guardado en: $_audioPath");
+      }else{
+        print("se detuvo por que path es null.");
+      }
+      /* String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
+      setState(() {
+        _controller.text = transcrit!;
+      }); */
     } catch (e) {
       print("Error al detener la grabación: $e");
     }
   }
 
+  Future<void> _trascribir() async {
+
+  }
   Future<void> _loadWords() async {
     final words = await DatabaseService().getAllPfIng();
     setState(() {
@@ -168,15 +184,24 @@ class _Pagina1State extends State<Pagina1> {
               child: Text('Guardar Palabra'),
             ),
             SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _startRecording,
-              child: Text('Grabar Palabra'),
+            GestureDetector(
+              onLongPress: _startRecording, //al presionar
+              onLongPressEnd: (details) => _stopRecording(), //cuando se suelta
+              child: Container(
+                alignment: Alignment.bottomLeft,
+                padding: EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: _isRecording ? Colors.red : Colors.blue,
+                  shape: BoxShape.circle,
+                ),
+                child: Icon(
+                  Icons.mic,
+                  color: Colors.white,
+                  size: 40,
+                ),
+              ),
             ),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _stopRecording,
-              child: Text('Detener Grabación'),
-            ),
+
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
