@@ -1,13 +1,13 @@
-import 'dart:io';//para el manejo de directory
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'pagina2.dart'; // Importa la segunda página
-import '../services/database_service.dart'; // Importa el servicio de base de datos
-import '../models/pf_ing_model.dart'; // Importa el modelo
-import 'package:flutter/services.dart'; //Necesario para Clipboard
+import 'pagina2.dart';
+import '../services/database_service.dart';
+import '../models/pf_ing_model.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:record/record.dart';
+import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
-import '../services/assembly_ai_service.dart'; //importamos el servicio 
+import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 
 class Pagina1 extends StatefulWidget {
   @override
@@ -17,45 +17,48 @@ class Pagina1 extends StatefulWidget {
 class _Pagina1State extends State<Pagina1> {
   TextEditingController _controller = TextEditingController();
   TextEditingController _creado = TextEditingController();
-  List<PfIng> _words = []; // Lista para almacenar palabras
+  List<PfIng> _words = [];
 
-  final _recorder = Record();
-  String _audioPath="";//este es el path de la ruta del archivo grabado
-
-
-  //el servicio assembly
-  final AssemblyAIService assemblyAI = AssemblyAIService();
-
-
+  final _recorder = Record(); // Usa el método Record() para obtener una instancia
+  String _audioPath = "";
+  bool _isRecording = false;
   @override
   void initState() {
     super.initState();
-    _loadWords(); // Cargar palabras al iniciar
+    _loadWords();
   }
-  //llamada a la api
-  
-  //metodo para la grabacion de audio
+
+  Future<void> _checkPermissions() async {
+    if (await Permission.microphone.request().isGranted) {
+      // Permiso concedido
+    } else {
+      print("Permiso de micrófono denegado");
+    }
+  }
+
   Future<void> _startRecording() async {
-    try{
-      if (await _recorder.hasPermission()){
+    await _checkPermissions(); // Verifica los permisos
+    try {
+      if (await _recorder.hasPermission()) {
         Directory tempDir = await getTemporaryDirectory();
         String filePath = '${tempDir.path}/recorded_audio.mp3';
 
         await _recorder.start(
           path: filePath,
-          encoder: AudioEncoder.aacLc, // Codec de compresion
-          bitRate: 128000, // Calidad de grabacion
+          encoder: AudioEncoder.aacLc,
+          bitRate: 128000,
           samplingRate: 44100,
         );
 
-        setState((){
+        setState(() {
           _audioPath = filePath;
         });
+        setState(()=> _isRecording = true);
       } else {
         print("No tienes permisos para grabar audio.");
       }
-    }catch(e){
-      print("Error al iniciar la grabacion: $e");
+    } catch (e) {
+      print("Error al iniciar la grabación: $e");
     }
   }
 
@@ -63,7 +66,7 @@ class _Pagina1State extends State<Pagina1> {
     try {
       final path = await _recorder.stop();
       setState(() {
-        _audioPath = path; // Guardamos la ruta del archivo
+        _isRecording = false;
       });
       print("Audio guardado en: $_audioPath");
     } catch (e) {
@@ -71,7 +74,6 @@ class _Pagina1State extends State<Pagina1> {
     }
   }
 
-  // Cargar palabras desde la base de datos
   Future<void> _loadWords() async {
     final words = await DatabaseService().getAllPfIng();
     setState(() {
@@ -79,55 +81,61 @@ class _Pagina1State extends State<Pagina1> {
     });
   }
 
-  // Guardar una nueva palabra en la base de datos
   Future<void> _saveWord() async {
     String word = _controller.text;
     if (word.isEmpty) return;
 
-    // Crear el objeto y guardarlo en SQLite
-    PfIng newWord = PfIng( 
-      word: word, 
+    PfIng newWord = PfIng(
+      word: word,
       sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
       learn: 0,
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
-      );
+    );
     await DatabaseService().insertPfIng(newWord);
 
-    _controller.clear(); // Limpiar el TextField
-    _loadWords(); // Recargar la lista después de guardar
+    _controller.clear();
+    _loadWords();
   }
 
   Future<void> _updSenten(int id) async {
-    String sentence= _creado.text;
-    if(sentence.isEmpty) return;
-    //busca el objeto actual
-    PfIng? currentWrd= _words.firstWhere(
-      (word) => word.id == id, 
-      orElse: ()=>PfIng(id:id, word: '', sentence:'',learn:0,createdAt: DateTime.now().toIso8601String(), // Si no existe, usa la fecha actual
-      updatedAt: DateTime.now().toIso8601String(),));
-    if(currentWrd.word.isEmpty) return;
-    //if(currentWrd.learn.isEmpty) return;
+    String sentence = _creado.text;
+    if (sentence.isEmpty) return;
+
+    PfIng? currentWrd = _words.firstWhere(
+      (word) => word.id == id,
+      orElse: () => PfIng(
+        id: id,
+        word: '',
+        sentence: '',
+        learn: 0,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      ),
+    );
+
+    if (currentWrd.word.isEmpty) return;
+
     PfIng newWord = PfIng(
       id: id,
       word: currentWrd.word,
       sentence: sentence,
       learn: currentWrd.learn,
-      createdAt: currentWrd.createdAt, // Mantiene la fecha original
-      updatedAt: DateTime.now().toIso8601String(), // Actualiza la fecha de modificación
+      createdAt: currentWrd.createdAt,
+      updatedAt: DateTime.now().toIso8601String(),
     );
     await DatabaseService().updatePfIng(newWord);
 
-    _creado.clear(); //limpiar el textfield
-    _loadWords(); //reacargar la lista despues de actualizar
+    _creado.clear();
+    _loadWords();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Página Principal'),
         actions: [
-          // Botón en el AppBar para ir a la segunda página
           IconButton(
             icon: Icon(Icons.navigate_next),
             onPressed: () {
@@ -156,22 +164,20 @@ class _Pagina1State extends State<Pagina1> {
             ),
             SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _saveWord, // Guardar en SQLite
+              onPressed: _saveWord,
               child: Text('Guardar Palabra'),
             ),
             SizedBox(height: 8),
             ElevatedButton(
               onPressed: _startRecording,
-              child: Text('grabar Palabra'),
+              child: Text('Grabar Palabra'),
             ),
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: _stopRecording,
-              child: Text('detener Palabra'),
+              child: Text('Detener Grabación'),
             ),
-
             SizedBox(height: 10),
-            // Botón adicional para ir a la segunda página
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -190,16 +196,15 @@ class _Pagina1State extends State<Pagina1> {
                     title: Text(_words[index].word),
                     subtitle: Text(_words[index].sentence),
                     trailing: Row(
-                      mainAxisSize: MainAxisSize.min, // Asegura que la flia ocupa el minimo espacion posible
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        //boton editar
                         IconButton(
                           icon: Icon(Icons.edit),
                           onPressed: () {
-                            _creado.text = '';//Cargar el texto actual en el campo
+                            _creado.text = '';
                             showDialog(
                               context: context,
-                              builder: (context){
+                              builder: (context) {
                                 return AlertDialog(
                                   title: Text("Editar Sentence"),
                                   content: TextField(
@@ -210,19 +215,18 @@ class _Pagina1State extends State<Pagina1> {
                                   ),
                                   actions: [
                                     ElevatedButton(
-                                      onPressed: (){
-                                        _updSenten(_words[index].id!); //llamar a la actualizacion
-                                        Navigator.of(context).pop(); // Cerrar el dialogo
+                                      onPressed: () {
+                                        _updSenten(_words[index].id!);
+                                        Navigator.of(context).pop();
                                       },
                                       child: Text("Actualizar"),
                                     ),
                                   ],
                                 );
-                              }
+                              },
                             );
-                          }
+                          },
                         ),
-                        // Boton de copiar
                         IconButton(
                           icon: Icon(Icons.copy),
                           onPressed: () {
@@ -232,7 +236,6 @@ class _Pagina1State extends State<Pagina1> {
                             );
                           },
                         ),
-                        //boton de borrar
                         IconButton(
                           icon: Icon(Icons.delete),
                           onPressed: () async {
@@ -241,13 +244,12 @@ class _Pagina1State extends State<Pagina1> {
                           },
                         ),
                       ],
-                  )
+                    ),
                   );
                 },
               ),
             ),
             SizedBox(height: 20),
-            
           ],
         ),
       ),
