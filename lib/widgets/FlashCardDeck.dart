@@ -11,11 +11,6 @@ class FlashCardDeck extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  bool operator ==(Object other) {
-    // TODO: implement ==
-    return super == other;
-  }
-  @override
   Widget build(BuildContext context) {
     // TODO: implement build
     return ListView.separated(

@@ -4,11 +4,12 @@ import 'pagina2.dart';
 import '../services/database_service.dart';
 import '../models/pf_ing_model.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_tts/flutter_tts.dart';
 import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 import '../services/assembly_ai_service.dart';
+
+import '../widgets/FlashCardDeck.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -22,7 +23,7 @@ class _Pagina1State extends State<Pagina1> {
   final _recorder = Record(); // Usa el método Record() para obtener una instancia
   String _audioPath = "";
   bool _isRecording = false;
-  final TextEditingController _transcripcion= TextEditingController();
+  //final TextEditingController _transcripcion= TextEditingController();
   final AssemblyAIService _assemblyServ= AssemblyAIService();
   @override
   void initState() {
@@ -78,18 +79,15 @@ class _Pagina1State extends State<Pagina1> {
       }else{
         print("se detuvo por que path es null.");
       }
-      String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
+      /* String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
       setState(() {
         _controller.text = transcrit!;
-      });
+      }); */
     } catch (e) {
       print("Error al detener la grabación: $e");
     }
   }
 
-  Future<void> _trascribir() async {
-
-  }
   Future<void> _loadWords() async {
     final words = await DatabaseService().getAllPfIng();
     setState(() {
