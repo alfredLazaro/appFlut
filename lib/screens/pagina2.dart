@@ -13,6 +13,9 @@ class Pagina2 extends StatefulWidget {
 class _Pagina2State extends State<Pagina2> {
   FlutterTts flutterTts=FlutterTts();
   final DatabaseService _dbService = DatabaseService();
+
+  late List<PfIng> _notLearnedWords;
+  late List<PfIng> _learnedWords;
   //funcion de audio
   Future<void> speak(String text) async{
     try{
@@ -33,12 +36,13 @@ class _Pagina2State extends State<Pagina2> {
     await _dbService.updatePfIng(word);
   }
 
+  void _filterWords() {
+    _notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
+    _learnedWords = widget.words.where((word) => word.learn >= 3).toList();
+  }
   @override
   Widget build(BuildContext context) {
-    // Filtrar palabras en dos categorías
-    List<PfIng> notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
-    List<PfIng> learnedWords = widget.words.where((word) => word.learn >= 3).toList();
-
+    
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -53,8 +57,8 @@ class _Pagina2State extends State<Pagina2> {
         ),
         body: TabBarView(
           children: [
-            _buildWordList(notLearnedWords),
-            _buildWordList(learnedWords),
+            _buildWordList(_notLearnedWords),
+            _buildWordList(_learnedWords),
           ],
         ),
       ),
