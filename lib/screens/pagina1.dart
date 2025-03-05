@@ -100,6 +100,7 @@ class _Pagina1State extends State<Pagina1> {
     if (word.isEmpty) return;
 
     PfIng newWord = PfIng(
+      definicion: '',
       word: word,
       sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
       learn: 0,
@@ -120,6 +121,7 @@ class _Pagina1State extends State<Pagina1> {
       (word) => word.id == id,
       orElse: () => PfIng(
         id: id,
+        definicion: '',
         word: '',
         sentence: '',
         learn: 0,
@@ -132,6 +134,7 @@ class _Pagina1State extends State<Pagina1> {
 
     PfIng newWord = PfIng(
       id: id,
+      definicion: currentWrd.definicion,
       word: currentWrd.word,
       sentence: sentence,
       learn: currentWrd.learn,
