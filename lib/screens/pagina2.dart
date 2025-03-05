@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../models/pf_ing_model.dart';
 import '../services/database_service.dart'; // Importa DatabaseService
 import 'package:flutter_tts/flutter_tts.dart';
+import 'package:first_app/widgets/FlashCardDeck.dart';
 class Pagina2 extends StatefulWidget {
   final List<PfIng> words;
   Pagina2({required this.words});
@@ -14,7 +15,7 @@ class _Pagina2State extends State<Pagina2> {
   FlutterTts flutterTts=FlutterTts();
   final DatabaseService _dbService = DatabaseService();
 
-  late List<PfIng> _notLearnedWords;
+  late List<PfIng> notLearnedWords;
   late List<PfIng> _learnedWords;
   //funcion de audio
   Future<void> speak(String text) async{
@@ -37,8 +38,13 @@ class _Pagina2State extends State<Pagina2> {
   }
 
   void _filterWords() {
-    _notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
+    notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
     _learnedWords = widget.words.where((word) => word.learn >= 3).toList();
+  }
+  @override
+  void initState(){
+    super.initState();
+    _filterWords(); //inicializa 
   }
   @override
   Widget build(BuildContext context) {
@@ -57,7 +63,7 @@ class _Pagina2State extends State<Pagina2> {
         ),
         body: TabBarView(
           children: [
-            _buildWordList(_notLearnedWords),
+            FlashCardDeck(notLearnedWords, flashCards: notLearnedWords),
             _buildWordList(_learnedWords),
           ],
         ),

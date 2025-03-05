@@ -1,10 +1,11 @@
+import 'package:first_app/models/pf_ing_model.dart';
 import 'package:flutter/material.dart';
 import 'EnglishFlashcard.dart';
 class FlashCardDeck extends StatelessWidget {
-  final List<Map<String, String>> flashCards;
+  final List<PfIng> flashCards;
   final Color cardColor;
 
-  const FlashCardDeck({
+  const FlashCardDeck(List<PfIng> notLearnedWords, {
     Key? key,
     required this.flashCards,
     this.cardColor = Colors.white, 
@@ -12,7 +13,6 @@ class FlashCardDeck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return ListView.separated(
       padding: const EdgeInsets.all(16.0),
       itemCount: flashCards.length,
@@ -20,10 +20,10 @@ class FlashCardDeck extends StatelessWidget {
       itemBuilder: (context, index){
         final card = flashCards[index];
         return EnglishFlashCard(
-          word: card['word'] ?? '',
-          definition: card['definition'] ?? '',
-          exampleSentence: card['exampleSentence']?? '',
-          imageUrl: card['imageUrl'] ?? '',
+          word: card.word ?? '',
+          definition: "sdfas" ?? '',
+          exampleSentence: card.sentence?? '',
+          imageUrl: '/ruta.png'?? '',
           cardColor: cardColor,
         );
       }
