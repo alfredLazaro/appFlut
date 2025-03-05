@@ -97,39 +97,67 @@ class _Pagina1State extends State<Pagina1> {
     String word = _controller.text;
     if (word.isEmpty) return;
 
-    try{
-      final definitionResult = await WordService().getWordDefinition(word);
+    try {
+      // Obtener la definición de la API
+      final definitionResponse = await WordService().getWordDefinition(word);
+      
+      // Extraer la definición de la respuesta
+      String definition = '';
+      String example = '';
+
+      // La API devuelve una lista, así que necesitas acceder al primer elemento
+      if (definitionResponse is List && definitionResponse.isNotEmpty) {
+        // Acceder al primer resultado
+        final firstResult = definitionResponse[0];
+        
+        // Extraer definición de los 'meanings'
+        if (firstResult['meanings'] != null && 
+            (firstResult['meanings'] as List).isNotEmpty) {
+          final firstMeaning = firstResult['meanings'][0];
+          if (firstMeaning['definitions'] != null && 
+              (firstMeaning['definitions'] as List).isNotEmpty) {
+            definition = firstMeaning['definitions'][0]['definition'] ?? '';
+            example = firstMeaning['definitions'][0]['example'] ?? '';
+          }
+        }
+      }
+
       PfIng newWord = PfIng(
-        // Usa la definición obtenida del servicio
-        definicion: definitionResult['definition'] ?? '',
+        // Usar definición extraída
+        definicion: definition, 
         word: word,
-        // Usa la frase de ejemplo si está disponible, sino genera una
-        sentence: definitionResult['example'] ?? 
-          "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
+        // Usar ejemplo o frase por defecto
+        sentence: example.isNotEmpty 
+          ? example 
+          : "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
         learn: 0,
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),
       );
 
-      // Inserta la palabra en la base de datos
       await DatabaseService().insertPfIng(newWord);
 
-      // Limpia el controlador y recarga las palabras
       _controller.clear();
       _loadWords();
-    }catch(e){
-      print("Error al guardar la palabra: $e");
+    } catch (e) {
+      // Manejo de error si no se encuentra la definición
       PfIng newWord = PfIng(
-        definicion: '',
+        definicion: 'Definición no encontrada',
         word: word,
         sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
         learn: 0,
         createdAt: DateTime.now().toIso8601String(),
         updatedAt: DateTime.now().toIso8601String(),
       );
+
       await DatabaseService().insertPfIng(newWord);
       _controller.clear();
       _loadWords();
+
+      // Opcional: Mostrar un mensaje de error
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo encontrar la definición de $word')),
+      );
     }
 
   }

@@ -13,32 +13,20 @@ class WordService {
   String get baseUrl => dotenv.env['BASE_URL_DICTIONARY'] ?? 'https://api.example.com';
 
   // Método para obtener definición de palabra
-  Future<Map<String, dynamic>> getWordDefinition(String word) async {
+  Future<dynamic> getWordDefinition(String word) async {
     try {
-      // no usa apiKey
-      
-      // Construir URL de la solicitud
-      final url = Uri.parse('$baseUrl/$word');
-      
-      // Realizar solicitud HTTP
       final response = await http.get(
-        url
+        Uri.parse('$baseUrl/$word')
       );
 
-      // Manejar respuesta
       if (response.statusCode == 200) {
-        final Map<String, dynamic> data = json.decode(response.body);
-        return {
-          'definition': data['definition'] ?? 'No definition found',
-          'example': data['example'] ?? 'No example available'
-        };
+        // Devuelve la respuesta decodificada
+        return json.decode(response.body);
       } else {
-        throw Exception('Failed to load word definition');
+        throw Exception('Palabra no encontrada');
       }
     } catch (e) {
-      // Manejo de errores
-      debugPrint('Error fetching word definition: $e');
-      rethrow;
+      throw Exception('Error al buscar la definición');
     }
   }
 }
