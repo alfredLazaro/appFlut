@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:first_app/services/dictonary_service.dart';
 import 'package:flutter/material.dart';
 import 'pagina2.dart';
 import '../services/database_service.dart';
@@ -96,18 +97,41 @@ class _Pagina1State extends State<Pagina1> {
     String word = _controller.text;
     if (word.isEmpty) return;
 
-    PfIng newWord = PfIng(
-      definicion: '',
-      word: word,
-      sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
-      learn: 0,
-      createdAt: DateTime.now().toIso8601String(),
-      updatedAt: DateTime.now().toIso8601String(),
-    );
-    await DatabaseService().insertPfIng(newWord);
+    try{
+      final definitionResult = await WordService().getWordDefinition(word);
+      PfIng newWord = PfIng(
+        // Usa la definición obtenida del servicio
+        definicion: definitionResult['definition'] ?? '',
+        word: word,
+        // Usa la frase de ejemplo si está disponible, sino genera una
+        sentence: definitionResult['example'] ?? 
+          "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
+        learn: 0,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      );
 
-    _controller.clear();
-    _loadWords();
+      // Inserta la palabra en la base de datos
+      await DatabaseService().insertPfIng(newWord);
+
+      // Limpia el controlador y recarga las palabras
+      _controller.clear();
+      _loadWords();
+    }catch(e){
+      print("Error al guardar la palabra: $e");
+      PfIng newWord = PfIng(
+        definicion: '',
+        word: word,
+        sentence: "Dame una oracion con el uso '$word' en ingles que contenga mas de 10 palabras y menos de 40 palabras, ademas de resaltar la frase o palabra que te di",
+        learn: 0,
+        createdAt: DateTime.now().toIso8601String(),
+        updatedAt: DateTime.now().toIso8601String(),
+      );
+      await DatabaseService().insertPfIng(newWord);
+      _controller.clear();
+      _loadWords();
+    }
+
   }
 
   Future<void> _updSenten(int id) async {
