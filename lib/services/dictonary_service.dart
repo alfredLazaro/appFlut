@@ -13,7 +13,7 @@ class WordService {
   final baseUrl =dotenv.env['BASE_URL_DICTIONARY'];
 
   // Método para obtener definición de palabra
-  Future<dynamic> getWordDefinition(String word) async {
+  Future<Map<String,dynamic>> getWordDefinition(String word) async {
     try {
       final response = await http.get(
         Uri.parse('$baseUrl/$word')
@@ -21,7 +21,13 @@ class WordService {
 
       if (response.statusCode == 200) {
         // Devuelve la respuesta decodificada
-        return json.decode(response.body);
+        final List<dynamic> jsonList = json.decode(response.body);
+        final Map<String,dynamic> json2 = jsonList[0];
+        return {
+          'definition': json2['meanings'][0]['definitions'][0]['definition'],
+          'example': json2['meanings'][0]['definitions'][0]['example']
+        };
+        //return json.decode(response.body);
       } else {
         throw Exception('Palabra no encontrada');
       }
