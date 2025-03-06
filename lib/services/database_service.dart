@@ -33,6 +33,7 @@ class DatabaseService {
         await db.execute('''
             CREATE TABLE pfIng(
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
+                definicion TEXT NOT NULL,
                 word TEXT NOT NULL,
                 sentence TEXT NOT NULL,
                 learn INTEGER NOT NULL DEFAULT 0,

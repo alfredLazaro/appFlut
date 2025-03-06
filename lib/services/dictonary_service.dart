@@ -10,7 +10,7 @@ class WordService {
   WordService._internal();
 
   // URL base para la API, obtenida de variables de entorno
-  String get baseUrl => dotenv.env['BASE_URL_DICTIONARY'] ?? 'https://api.example.com';
+  final baseUrl =dotenv.env['BASE_URL_DICTIONARY'];
 
   // Método para obtener definición de palabra
   Future<dynamic> getWordDefinition(String word) async {
