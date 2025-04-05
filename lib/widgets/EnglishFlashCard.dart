@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:first_app/models/pf_ing_model.dart';
@@ -6,26 +8,24 @@ class EnglishFlashCard extends StatefulWidget {
   //propiedades para personalizar el widget
   final PfIng wordData;
   final String word;
-  final String definition;
-  final String exampleSentence;
   final String imageUrl;
   final int learn;
   final Color cardColor;
   final Color textColor;
   final double borderRadius;
   final bool showFrontByDefault;
+  final VoidCallback onLearned;
   const EnglishFlashCard({
     Key? key,
     required this.wordData,
     required this.word,
-    required this.definition,
-    required this.exampleSentence,
     required this.imageUrl,
     required this.learn,
+    required this.onLearned,
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
-    this.showFrontByDefault = true,
+    this.showFrontByDefault = false,
   }) : super(key: key);
 
   @override
@@ -167,6 +167,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                     _word.learn += 1;
                     _dbService.updatePfIng(_word);//actualizo
                   });
+                  widget.onLearned(); //llamo a la funcion de la pagina
                 },
                 icon: const Icon(Icons.check),
                 label: const Text('Learned'),
@@ -181,6 +182,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                     _word.learn = 0;
                     _dbService.updatePfIng(_word);//actualizo a 0
                   });
+                  widget.onLearned(); //llamo a la funcion de la pagina
                 },
                 icon: const Icon(Icons.restart_alt),
                 label: const Text("Again"),

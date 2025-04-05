@@ -17,6 +17,7 @@ class _Pagina2State extends State<Pagina2> {
 
   late List<PfIng> notLearnedWords;
   late List<PfIng> _learnedWords;
+  final nroRepetitions = 3; // Número de repeticiones para considerar "aprendido"
   //funcion de audio
   Future<void> speak(String text) async{
     try{
@@ -33,13 +34,25 @@ class _Pagina2State extends State<Pagina2> {
   Future<void> _updateLearnStatus(PfIng word, int value) async {
     setState(() {
       word.learn = value;
+      //_filterWords(); // Actualiza la lista de palabras después de cambiar el estado
     });
     await _dbService.updatePfIng(word);
   }
 
   void _filterWords() {
-    notLearnedWords = widget.words.where((word) => word.learn < 3).toList();
-    _learnedWords = widget.words.where((word) => word.learn >= 3).toList();
+    notLearnedWords = widget.words.where((word) => word.learn < nroRepetitions).toList();
+    _learnedWords = widget.words.where((word) => word.learn >= nroRepetitions).toList();
+  }
+
+  void onLearnedTap(PfIng word){
+    setState(() {
+      notLearnedWords.remove(word);
+      if(word.learn >= nroRepetitions){
+        _learnedWords.add(word);
+      }else{
+        notLearnedWords.add(word);//deberia mandar al final de la lista
+      }
+    });
   }
   @override
   void initState(){
@@ -63,9 +76,9 @@ class _Pagina2State extends State<Pagina2> {
         ),
         body: TabBarView(
           children: [
-            FlashCardDeck(notLearnedWords, flashCards: notLearnedWords),
-            FlashCardDeck(_learnedWords, flashCards: _learnedWords),
-            _buildWordList(_learnedWords),
+            FlashCardDeck(notLearnedWords, flashCards: notLearnedWords, onLearnedTap: onLearnedTap),
+            FlashCardDeck(_learnedWords, flashCards: _learnedWords, onLearnedTap: onLearnedTap),
+            //_buildWordList(_learnedWords),
           ],
         ),
       ),
