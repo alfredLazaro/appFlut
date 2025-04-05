@@ -20,8 +20,10 @@ class FlashCardDeck extends StatelessWidget {
       itemBuilder: (context, index){
         final card = flashCards[index];
         return EnglishFlashCard(
+          wordData: card,
+          learn: card.learn,
           word: card.word ?? '',
-          definition: "sdfas" ?? '',
+          definition: "here go the definition" ?? '',
           exampleSentence: card.sentence?? '',
           imageUrl: '/ruta.png'?? '',
           cardColor: cardColor,

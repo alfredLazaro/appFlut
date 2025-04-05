@@ -64,6 +64,7 @@ class _Pagina2State extends State<Pagina2> {
         body: TabBarView(
           children: [
             FlashCardDeck(notLearnedWords, flashCards: notLearnedWords),
+            FlashCardDeck(_learnedWords, flashCards: _learnedWords),
             _buildWordList(_learnedWords),
           ],
         ),

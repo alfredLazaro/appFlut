@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-
+import 'package:first_app/models/pf_ing_model.dart';
+import 'package:first_app/services/database_service.dart'; // Importa DatabaseService
 class EnglishFlashCard extends StatefulWidget {
   //propiedades para personalizar el widget
+  final PfIng wordData;
   final String word;
   final String definition;
   final String exampleSentence;
   final String imageUrl;
+  final int learn;
   final Color cardColor;
   final Color textColor;
   final double borderRadius;
   final bool showFrontByDefault;
   const EnglishFlashCard({
     Key? key,
+    required this.wordData,
     required this.word,
     required this.definition,
     required this.exampleSentence,
     required this.imageUrl,
+    required this.learn,
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
@@ -29,11 +34,14 @@ class EnglishFlashCard extends StatefulWidget {
 
 class _EnglishFlasCardState extends State<EnglishFlashCard> {
   late bool _showFront;
+  late DatabaseService _dbService = DatabaseService();
+  late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
   @override
   void initState() {
     super.initState();
     _showFront = widget.showFrontByDefault;
+    _word = widget.wordData;
   }
 
   @override
@@ -93,13 +101,13 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              widget.imageUrl,
-              height: 180,
+              widget.imageUrl,// no esta definido en el modelo
+              height: 130,
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  height: 180,
+                  height: 130,
                   width: double.infinity,
                   color: Colors.grey[300],
                   child: const Icon(
@@ -112,7 +120,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  height: 180,
+                  height: 130,
                   width: double.infinity,
                   color: Colors.grey[200],
                   child: Center(
@@ -130,7 +138,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(height: 20),
           //Palabra en ingles
           Text(
-            widget.word,
+            _word.word ?? 'Word not found',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -147,7 +155,43 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               fontStyle: FontStyle.italic,
               color: widget.textColor.withOpacity(0.6),
             ),
+          ),
+          const SizedBox(height: 20),
+          //botones de control
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    _word.learn += 1;
+                    _dbService.updatePfIng(_word);//actualizo
+                  });
+                },
+                icon: const Icon(Icons.check),
+                label: const Text('Learned'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: () {
+                  setState(() {
+                    _word.learn = 0;
+                    _dbService.updatePfIng(_word);//actualizo a 0
+                  });
+                },
+                icon: const Icon(Icons.restart_alt),
+                label: const Text("Again"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
+              )
+            ],
           )
+            
         ],
       ),
     );
@@ -183,7 +227,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
             child: Text(
-              widget.definition,
+              _word.definicion,
               style: TextStyle(
                 fontSize: 16,
                 color: widget.textColor,
@@ -210,7 +254,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
         ),
         const SizedBox(height: 8),
         Text(
-          '"${widget.exampleSentence}"',
+          '"${_word.sentence}"',
           style: TextStyle(
             fontSize: 16,
             fontStyle: FontStyle.italic,
