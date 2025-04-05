@@ -29,7 +29,8 @@ class _Pagina2State extends State<Pagina2> {
       print("Error al leer el texto: $e");
     }
   }
-
+  //
+  
   // Función para actualizar el estado de aprendizaje de la palabra
   Future<void> _updateLearnStatus(PfIng word, int value) async {
     setState(() {

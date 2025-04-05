@@ -9,6 +9,8 @@ import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
+import '../services/deep_ai_service.dart';
+
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -27,6 +29,30 @@ class _Pagina1State extends State<Pagina1> {
   String _audioPath = "";
   bool _isRecording = false;
   //final TextEditingController _transcripcion= TextEditingController();
+
+  //uso appi deep 
+  //final DeepSeekApiService _deepSeekApiService = DeepSeekApiService();
+  String _responseD = "";
+  bool _isLoading = false;
+
+  Future<void> _sendMessage(String message) async {
+    setState(() => _isLoading = true);
+    try {
+      final response = await DeepSeekApiService().getChatResponse(message);
+      setState(() {
+        _responseD = response;
+        print("1111111111111111111111111111111111111111111111111111111111111111111111");
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      print("asdfa-00000000000000000000000000000000000000000000000000000000000000000000000000");
+      print("Error: $e");
+    }finally {
+      setState(() => _isLoading = false);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
@@ -122,7 +148,12 @@ class _Pagina1State extends State<Pagina1> {
   Future<void> _saveWord() async {
     String word = _controller.text;
     if (word.isEmpty) return;
-
+    String prompt = "dame la definicion de la palabra $word en ingles y un ejemplo de uso en una oracion en ingles.";
+    _sendMessage(prompt);
+    print("Respuesta de DeepAI: $_responseD");
+    // Aquí puedes procesar la respuesta y guardarla en la base de datos
+    // Por ejemplo, puedes extraer la definición y la oración de la respuesta
+    print("///////////////////////////////////////////////////////////////////////////////////////////////");
     PfIng newWord = PfIng(
       definicion: '',
       word: word,
@@ -140,7 +171,7 @@ class _Pagina1State extends State<Pagina1> {
 
   Future<void> obtenerDatos(String word) async {
     _wordService.getWordDefinition(word).then((value) {
-      print("...........................................................");
+      print(".....................servicio diccionario......................................");
       print(value);
       
     });

@@ -1,3 +1,4 @@
+import 'package:first_app/services/deep_ai_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/pagina1.dart';
@@ -7,6 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
   await dotenv.load(fileName: "assets/.env"); //Cargar variables de entorno
   //sqfliteFfinit();
+  await DeepSeekApiService().initialize(); // Inicializa el servicio de API
   runApp(MyApp());
 }
 
