@@ -39,4 +39,15 @@ class PfIng{
             'updated_at': updatedAt,
         };
     }
+    factory PfIng.fromJson(Map<String, dynamic> json){
+      return PfIng(
+        id: json['id'],
+        definicion: json['definicion'],
+        word: json['word'],
+        sentence: json['sentence'],
+        learn: json['learn'],
+        createdAt: json['created_at'],
+        updatedAt: json['updated_at'],
+      );
+    }
 }
