@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
-
+import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -17,6 +17,10 @@ class Pagina1 extends StatefulWidget {
 class _Pagina1State extends State<Pagina1> {
   TextEditingController _controller = TextEditingController();
   TextEditingController _creado = TextEditingController();
+  //hablar a texto
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+  String _text = "Presiona el botón para hablar";
   List<PfIng> _words = [];
   WordService _wordService = WordService();
   final _recorder = Record(); // Usa el método Record() para obtener una instancia
@@ -27,6 +31,28 @@ class _Pagina1State extends State<Pagina1> {
   void initState() {
     super.initState();
     _loadWords();
+    _speech = stt.SpeechToText();
+  }
+  //funcion para iniciar y detener el texto a voz
+  void _listen() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (val) => print('onStatus: $val'),
+        onError: (val) => print('onError: $val'),
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (val) => setState(() {
+            //_text = val.recognizedWords;
+            _controller.text = val.recognizedWords; //
+          }),
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
   }
 
   Future<void> _checkPermissions() async {
@@ -192,24 +218,11 @@ class _Pagina1State extends State<Pagina1> {
               child: Text('Guardar Palabra'),
             ),
             SizedBox(height: 8),
-            GestureDetector(
-              onLongPress: _startRecording, //al presionar
-              onLongPressEnd: (details) => _stopRecording(), //cuando se suelta
-              child: Container(
-                alignment: Alignment.bottomLeft,
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: _isRecording ? Colors.red : Colors.blue,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.mic,
-                  color: Colors.white,
-                  size: 40,
-                ),
-              ),
+            FloatingActionButton(
+              onPressed: _listen,
+              child: Icon(_isListening ? Icons.mic : Icons.mic_none),
             ),
-
+            
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
