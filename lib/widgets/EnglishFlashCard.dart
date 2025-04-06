@@ -221,7 +221,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.volume_up),
-            onPressed: () => Speak("aun no esta recibiendo audio"),
+            onPressed: () => Speak(_word.definicion ?? 'definition not found'),
           ),
         ]),
 
@@ -238,21 +238,30 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
             ),
           ),
           const SizedBox(width: 10),
-          IconButton(
-            onPressed: () => Speak("sin texto aun"),
-            icon: const Icon(Icons.volume_up),
-          ),
         ]),
 
         const SizedBox(height: 20),
         //ejemplo
-        Text(
-          'Example:',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: widget.textColor,
-          ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Expanded(
+              child: 
+                Text(
+                  'Example:',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: widget.textColor,
+                  ),
+                ),
+            ),
+            const SizedBox(width: 10),
+            IconButton(
+              onPressed: () => Speak(_word.sentence ?? 'example not found'),
+              icon: const Icon(Icons.volume_up),
+            ),
+          ]
         ),
         const SizedBox(height: 8),
         Text(

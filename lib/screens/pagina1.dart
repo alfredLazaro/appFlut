@@ -148,27 +148,34 @@ class _Pagina1State extends State<Pagina1> {
     String word = _controller.text;
     if (word.isEmpty) return;
     
+    final data = await obtenerDatos(word);
     PfIng newWord = PfIng(
-      definicion: '',
+      definicion: data['definition'] ?? 'no hay definicion',
       word: word,
-      sentence: '',
+      sentence: data['example'] ?? 'no hay ejemplo',
       learn: 0,
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );
     await DatabaseService().insertPfIng(newWord);
-      obtenerDatos(word);
     _controller.clear();
     _loadWords();
 
   }
 
-  Future<void> obtenerDatos(String word) async {
-    _wordService.getWordDefinition(word).then((value) {
+  Future<Map<String,dynamic>> obtenerDatos(String word) async {
+    try{
+      final value = await _wordService.getWordDefinition(word);
       print(".....................servicio diccionario......................................");
       print(value);
-      
-    });
+      return value;
+    }catch(e){
+      print("Error al obtener datos: $e");
+      return {
+        'definition': 'No se encontró la definición',
+        'example': 'No se encontró el ejemplo'
+      };
+    }
   }
 
   Future<void> _updSenten(int id) async {
