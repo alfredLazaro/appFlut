@@ -22,7 +22,6 @@ class _Pagina1State extends State<Pagina1> {
   //hablar a texto
   late stt.SpeechToText _speech;
   bool _isListening = false;
-  String _text = "Presiona el botón para hablar";
   List<PfIng> _words = [];
   WordService _wordService = WordService();
   final _recorder = Record(); // Usa el método Record() para obtener una instancia
@@ -148,12 +147,7 @@ class _Pagina1State extends State<Pagina1> {
   Future<void> _saveWord() async {
     String word = _controller.text;
     if (word.isEmpty) return;
-    String prompt = "dame la definicion de la palabra $word en ingles y un ejemplo de uso en una oracion en ingles.";
-    _sendMessage(prompt);
-    print("Respuesta de DeepAI: $_responseD");
-    // Aquí puedes procesar la respuesta y guardarla en la base de datos
-    // Por ejemplo, puedes extraer la definición y la oración de la respuesta
-    print("///////////////////////////////////////////////////////////////////////////////////////////////");
+    
     PfIng newWord = PfIng(
       definicion: '',
       word: word,

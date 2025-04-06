@@ -2,7 +2,6 @@ import 'package:first_app/services/deep_ai_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'screens/pagina1.dart';
-import 'screens/pagina2.dart';// importa la pagina 2
 //import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized(); 
