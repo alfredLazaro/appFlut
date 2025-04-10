@@ -37,6 +37,8 @@ class DatabaseService {
                 word TEXT NOT NULL,
                 sentence TEXT NOT NULL,
                 learn INTEGER NOT NULL DEFAULT 0,
+                image TEXT,
+                context TEXT,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 updated_at TEXT DEFAULT CURRENT_TIMESTAMP
             )

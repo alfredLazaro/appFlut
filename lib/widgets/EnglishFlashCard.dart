@@ -102,12 +102,12 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
               widget.imageUrl,// no esta definido en el modelo
-              height: 130,
+              height: 150,
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  height: 130,
+                  height: 150,
                   width: double.infinity,
                   color: Colors.grey[300],
                   child: const Icon(
@@ -120,7 +120,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  height: 130,
+                  height: 150,
                   width: double.infinity,
                   color: Colors.grey[200],
                   child: Center(
@@ -156,7 +156,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               color: widget.textColor.withOpacity(0.6),
             ),
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: 15),
           //botones de control
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

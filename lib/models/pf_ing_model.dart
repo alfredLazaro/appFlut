@@ -4,6 +4,8 @@ class PfIng{
     final String word;
     final String sentence;
     int learn;
+    String? imageUrl = '/ruta.png';
+    String? context;
     String createdAt;
     String updatedAt;
 
@@ -13,6 +15,8 @@ class PfIng{
         required this.word,
         required this.sentence,
         required this.learn,
+        this.imageUrl = '/ruta.png',
+        this.context,
         required this.createdAt,
         required this.updatedAt,
     });
@@ -24,6 +28,8 @@ class PfIng{
             word: map['word'],
             sentence: map['sentence'],
             learn: map['learn'],
+            imageUrl: map['image'],
+            context: map['context'],
             createdAt: map['created_at'],
             updatedAt: map['updated_at'],
         );
@@ -35,6 +41,8 @@ class PfIng{
             'word':word,
             'sentence':sentence,
             'learn':learn,
+            'image':imageUrl,
+            'context':context,
             'created_at': createdAt,
             'updated_at': updatedAt,
         };
@@ -46,6 +54,8 @@ class PfIng{
         word: json['word'],
         sentence: json['sentence'],
         learn: json['learn'],
+        imageUrl: json['image'],
+        context: json['context'],
         createdAt: json['created_at'],
         updatedAt: json['updated_at'],
       );
