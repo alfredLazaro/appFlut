@@ -221,7 +221,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.volume_up),
-            onPressed: () => Speak(_word.definicion ?? 'definition not found'),
+            onPressed: () => Speak(_word.definicion ),
           ),
         ]),
 
@@ -258,7 +258,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
             ),
             const SizedBox(width: 10),
             IconButton(
-              onPressed: () => Speak(_word.sentence ?? 'example not found'),
+              onPressed: () => Speak(_word.sentence),
               icon: const Icon(Icons.volume_up),
             ),
           ]
