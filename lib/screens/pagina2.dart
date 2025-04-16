@@ -51,7 +51,7 @@ class _Pagina2State extends State<Pagina2> {
       if(word.learn >= nroRepetitions){
         _learnedWords.add(word);
       }else{
-        notLearnedWords.add(word);//deberia mandar al final de la lista
+        notLearnedWords = List.from(notLearnedWords)..add(word);
       }
     });
   }
@@ -77,8 +77,8 @@ class _Pagina2State extends State<Pagina2> {
         ),
         body: TabBarView(
           children: [
-            FlashCardDeck(notLearnedWords, flashCards: notLearnedWords, onLearnedTap: onLearnedTap),
-            FlashCardDeck(_learnedWords, flashCards: _learnedWords, onLearnedTap: onLearnedTap),
+            FlashCardDeck(flashCards: notLearnedWords, onLearnedTap: onLearnedTap),
+            FlashCardDeck(flashCards: _learnedWords, onLearnedTap: onLearnedTap),
             //_buildWordList(_learnedWords),
           ],
         ),

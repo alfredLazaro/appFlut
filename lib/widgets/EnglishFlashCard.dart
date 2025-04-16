@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
@@ -34,7 +33,7 @@ class EnglishFlashCard extends StatefulWidget {
 
 class _EnglishFlasCardState extends State<EnglishFlashCard> {
   late bool _showFront;
-  late DatabaseService _dbService = DatabaseService();
+  DatabaseService _dbService = DatabaseService();
   late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
   @override
@@ -42,14 +41,10 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
     super.initState();
     _showFront = widget.showFrontByDefault;
     _word = widget.wordData;
+    _dbService= DatabaseService();
   }
 
-  @override
-  void activate() {
-    super.activate();
-  }
-
-  Future<void> Speak(String text) async {
+  Future<void> speakf(String text) async {
     try {
       await flutterTts.setLanguage('en-US');
       await flutterTts.setPitch(1.0);
@@ -221,7 +216,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(width: 10),
           IconButton(
             icon: const Icon(Icons.volume_up),
-            onPressed: () => Speak(_word.definicion ),
+            onPressed: () => speakf(_word.definicion ),
           ),
         ]),
 
@@ -258,7 +253,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
             ),
             const SizedBox(width: 10),
             IconButton(
-              onPressed: () => Speak(_word.sentence),
+              onPressed: () => speakf(_word.sentence),
               icon: const Icon(Icons.volume_up),
             ),
           ]
