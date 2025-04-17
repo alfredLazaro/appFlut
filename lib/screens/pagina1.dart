@@ -9,7 +9,6 @@ import 'package:record/record.dart'; // Importa el paquete record
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
-import '../services/deep_ai_service.dart';
 
 class Pagina1 extends StatefulWidget {
   @override
@@ -31,7 +30,7 @@ class _Pagina1State extends State<Pagina1> {
 
   //uso appi deep 
   //final DeepSeekApiService _deepSeekApiService = DeepSeekApiService();
-  String _responseD = "";
+ /*  String _responseD = "";
   bool _isLoading = false;
 
   Future<void> _sendMessage(String message) async {
@@ -50,7 +49,7 @@ class _Pagina1State extends State<Pagina1> {
     }finally {
       setState(() => _isLoading = false);
     }
-  }
+  } */
 
   @override
   void initState() {

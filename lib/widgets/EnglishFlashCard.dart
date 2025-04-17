@@ -14,6 +14,7 @@ class EnglishFlashCard extends StatefulWidget {
   final bool showFrontByDefault;
   final VoidCallback onLearned;
   final VoidCallback resetLearn;
+  final Function(String) testingWord;
   const EnglishFlashCard({
     Key? key,
     required this.wordData,
@@ -22,6 +23,7 @@ class EnglishFlashCard extends StatefulWidget {
     required this.learn,
     required this.onLearned,
     required this.resetLearn,
+    required this.testingWord,
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
@@ -36,6 +38,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   late bool _showFront;
   late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
+  final TextEditingController wordTest= TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -191,8 +194,25 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
       key: const ValueKey<String>('back'),
       height: 350,
       width: double.infinity,
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.all(12.0),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+        //test
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children:[
+            TextField(
+              controller: wordTest,
+              decoration: const InputDecoration(
+                labelText: 'Aprendiste?',
+                //border: OutlineInputBorder(),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: widget.testingWord(wordTest.text),
+              child: const Icon(Icons.send)
+            ),
+          ]
+        ),
         //definicion
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
