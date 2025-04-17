@@ -4,7 +4,6 @@ import 'pagina2.dart';
 import '../services/database_service.dart';
 import '../models/pf_ing_model.dart';
 import 'package:flutter/services.dart';
-import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
 import 'package:logger/logger.dart';
 class Pagina1 extends StatefulWidget {
@@ -20,7 +19,7 @@ class _Pagina1State extends State<Pagina1> {
   late stt.SpeechToText _speech;
   bool _isListening = false;
   List<PfIng> _words = [];
-  WordService _wordService = WordService();
+  final WordService _wordService = WordService();
 
   
 
@@ -34,8 +33,8 @@ class _Pagina1State extends State<Pagina1> {
   void _listen() async {
     if (!_isListening) {
       bool available = await _speech.initialize(
-        onStatus: (val) => print('onStatus: $val'),
-        onError: (val) => print('onError: $val'),
+        onStatus: (val) => loger.d('onStatus: $val'),
+        onError: (val) => loger.d('onError: $val'),
       );
       if (available) {
         setState(() => _isListening = true);
@@ -81,11 +80,11 @@ class _Pagina1State extends State<Pagina1> {
   Future<Map<String,dynamic>> obtenerDatos(String word) async {
     try{
       final value = await _wordService.getWordDefinition(word);
-      print(".....................servicio diccionario......................................");
-      print(value);
+      loger.d(".....................servicio diccionario......................................");
+      loger.d(value);
       return value;
     }catch(e){
-      print("Error al obtener datos: $e");
+      loger.d("Error al obtener datos: $e");
       return {
         'definition': 'No se encontró la definición',
         'example': 'No se encontró el ejemplo'
