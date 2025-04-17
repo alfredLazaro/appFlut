@@ -38,23 +38,39 @@ class _Pagina2State extends State<Pagina2> {
   void resetLearn(PfIng word){
     setState(() {
       _updateLearnStatus(word,0);
+      _learnedWords.remove(word);
+      notLearnedWords.remove(word);//por si acaso
+      notLearnedWords.add(word);
     });
-    _learnedWords.remove(word);
-    notLearnedWords.add(word);
   }
 
   void onLearnedTap(PfIng word) {
       _updateLearnStatus(word, word.learn+1); //actualizar el valor
     setState((){
       notLearnedWords.remove(word);
+      _learnedWords.remove(word);//por si acaso
       if(word.learn<nroRepetitions){
         notLearnedWords.insert(0,word);
       }else{
         _learnedWords.add(word);
       }
     });
-    //  _filterWords(); // Actualizar las listas después de la actualización
   }
+
+  //logica para probar si aprendiste una palabra bien
+  void isLearned(PfIng pOrig,String pTest){
+    String origWord=pOrig.word;
+    setState(() {
+      if(origWord==pTest){
+        //lo pongo en lista de aprendidos
+        _updateLearnStatus(pOrig, nroRepetitions);//el valor maximo
+        _learnedWords.add(pOrig);
+      }else{
+        resetLearn(pOrig);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     
