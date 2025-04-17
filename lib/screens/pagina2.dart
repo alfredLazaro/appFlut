@@ -69,9 +69,8 @@ class _Pagina2State extends State<Pagina2> {
         ),
         body: TabBarView(
           children: [
-            FlashCardDeck(flashCards: notLearnedWords, onLearnedTap: onLearnedTap),
-            FlashCardDeck(flashCards: _learnedWords, onLearnedTap: onLearnedTap),
-            //_buildWordList(_learnedWords),
+            FlashCardDeck(flashCards: notLearnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn),
+            FlashCardDeck(flashCards: _learnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn),
           ],
         ),
       ),

@@ -14,6 +14,7 @@ class EnglishFlashCard extends StatefulWidget {
   final double borderRadius;
   final bool showFrontByDefault;
   final VoidCallback onLearned;
+  final VoidCallback resetLearn;
   const EnglishFlashCard({
     Key? key,
     required this.wordData,
@@ -21,6 +22,7 @@ class EnglishFlashCard extends StatefulWidget {
     required this.imageUrl,
     required this.learn,
     required this.onLearned,
+    required this.resetLearn,
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
@@ -158,11 +160,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
             children: [
               ElevatedButton.icon(
                 onPressed: () {
-                  setState(() {
-                    _word.learn += 1;
-                    _dbService.updatePfIng(_word);//actualizo
-                  });
-                  widget.onLearned(); //llamo a la funcion de la pagina
+                  widget.onLearned(); //llamo funcion incremento en pagina 2
                 },
                 icon: const Icon(Icons.check),
                 label: const Text('Learned'),
@@ -173,11 +171,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               ),
               ElevatedButton.icon(
                 onPressed: () {
-                  setState(() {
-                    _word.learn = 0;
-                    _dbService.updatePfIng(_word);//actualizo a 0
-                  });
-                  widget.onLearned(); //llamo a la funcion de la pagina
+                  widget.resetLearn(); //llamo la funcion reset en pagina 2
                 },
                 icon: const Icon(Icons.restart_alt),
                 label: const Text("Again"),

@@ -7,10 +7,12 @@ class FlashCardDeck extends StatelessWidget {
   final List<PfIng> flashCards;
   final Color cardColor;
   final void Function(PfIng word) onLearnedTap;
+  final void Function(PfIng word) resetLearn;
   const FlashCardDeck({
     Key? key,
     required this.flashCards,
     required this.onLearnedTap,
+    required this.resetLearn,
     this.cardColor = Colors.white, 
   }) : super(key: key);
 
@@ -36,6 +38,7 @@ class FlashCardDeck extends StatelessWidget {
                     word: flashCards[i].word,
                     imageUrl: '/ruta.png',
                     onLearned: () => onLearnedTap(flashCards[i]),
+                    resetLearn: ()=> resetLearn(flashCards[i]),
                     cardColor: cardColor,
                   ),
                 ),
