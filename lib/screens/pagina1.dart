@@ -1,21 +1,19 @@
-import 'dart:io';
 import 'package:first_app/services/dictonary_service.dart';
 import 'package:flutter/material.dart';
 import 'pagina2.dart';
 import '../services/database_service.dart';
 import '../models/pf_ing_model.dart';
 import 'package:flutter/services.dart';
-import 'package:record/record.dart'; // Importa el paquete record
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart'; // Para manejar permisos
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
-
+import 'package:logger/logger.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
 }
 
 class _Pagina1State extends State<Pagina1> {
+  final loger=Logger();
   final TextEditingController _controller = TextEditingController();
   final TextEditingController _creado = TextEditingController();
   //hablar a texto
@@ -23,33 +21,8 @@ class _Pagina1State extends State<Pagina1> {
   bool _isListening = false;
   List<PfIng> _words = [];
   WordService _wordService = WordService();
-  final _recorder = Record(); // Usa el método Record() para obtener una instancia
-  String _audioPath = "";
-  bool _isRecording = false;
-  //final TextEditingController _transcripcion= TextEditingController();
 
-  //uso appi deep 
-  //final DeepSeekApiService _deepSeekApiService = DeepSeekApiService();
- /*  String _responseD = "";
-  bool _isLoading = false;
-
-  Future<void> _sendMessage(String message) async {
-    setState(() => _isLoading = true);
-    try {
-      final response = await DeepSeekApiService().getChatResponse(message);
-      setState(() {
-        _responseD = response;
-        print("1111111111111111111111111111111111111111111111111111111111111111111111");
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() => _isLoading = false);
-      print("asdfa-00000000000000000000000000000000000000000000000000000000000000000000000000");
-      print("Error: $e");
-    }finally {
-      setState(() => _isLoading = false);
-    }
-  } */
+  
 
   @override
   void initState() {
@@ -76,63 +49,6 @@ class _Pagina1State extends State<Pagina1> {
     } else {
       setState(() => _isListening = false);
       _speech.stop();
-    }
-  }
-
-  Future<void> _checkPermissions() async {
-    if (await Permission.microphone.request().isGranted) {
-      // Permiso concedido
-    } else {
-      print("Permiso de micrófono denegado");
-    }
-  }
-
-  Future<void> _startRecording() async {
-    await _checkPermissions(); // Verifica los permisos
-    try {
-      if (await _recorder.hasPermission()) {
-        Directory tempDir = await getTemporaryDirectory();
-        String filePath = '${tempDir.path}/recorded_audio.mp3';
-
-        await _recorder.start(
-          path: filePath,
-          encoder: AudioEncoder.aacLc,
-          bitRate: 128000,
-          samplingRate: 44100,
-        );
-
-        setState(() {
-          _audioPath = filePath;
-        });
-        setState(()=> _isRecording = true);
-      } else {
-        print("No tienes permisos para grabar audio.");
-      }
-    } catch (e) {
-      print("Error al iniciar la grabación: $e");
-    }
-  }
-
-  Future<void> _stopRecording() async {
-    try {
-      final path = await _recorder.stop();
-      setState(() {
-        _isRecording = false;
-      });
-      if(path != null){
-        setState(() {
-          _audioPath = path;
-        });
-        print("Audio guardado en: $_audioPath");
-      }else{
-        print("se detuvo por que path es null.");
-      }
-      /* String? transcrit = await _assemblyServ.transcribeAudio(_audioPath);
-      setState(() {
-        _controller.text = transcrit!;
-      }); */
-    } catch (e) {
-      print("Error al detener la grabación: $e");
     }
   }
 
