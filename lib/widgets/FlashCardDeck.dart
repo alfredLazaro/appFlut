@@ -27,8 +27,8 @@ class FlashCardDeck extends StatelessWidget {
         children: [
           for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
             Positioned(
-              bottom: i * 4,
-              right: i * 4,
+              bottom: i * 6,
+              right: i * 6,
                 child: SizedBox(
                   width: 300,
                   child: EnglishFlashCard(

@@ -133,7 +133,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(height: 20),
           //Palabra en ingles
           Text(
-            _word.word ?? 'Word not found',
+            _word.word.isNotEmpty == true ? _word.word : 'Word not found',
             style: TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
@@ -212,7 +212,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           ),
         ]),
 
-        const SizedBox(height: 8),
+        const SizedBox(height: 3),
         Row(mainAxisAlignment: MainAxisAlignment.center, children: [
           Expanded(
             child: Text(
@@ -227,7 +227,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           const SizedBox(width: 10),
         ]),
 
-        const SizedBox(height: 20),
+        const SizedBox(height: 10),
         //ejemplo
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
