@@ -16,8 +16,8 @@ class Pagina1 extends StatefulWidget {
 }
 
 class _Pagina1State extends State<Pagina1> {
-  TextEditingController _controller = TextEditingController();
-  TextEditingController _creado = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _creado = TextEditingController();
   //hablar a texto
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -215,10 +215,10 @@ class _Pagina1State extends State<Pagina1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Página Principal'),
+        title: const Text('Página Principal'),
         actions: [
           IconButton(
-            icon: Icon(Icons.navigate_next),
+            icon: const Icon(Icons.navigate_next),
             onPressed: () {
               Navigator.push(
                 context,
@@ -232,29 +232,29 @@ class _Pagina1State extends State<Pagina1> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text('Palabra en inglés que no entiendes'),
+            const Text('Palabra en inglés que no entiendes'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 controller: _controller,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Escribe la palabra',
                   border: OutlineInputBorder(),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _saveWord,
-              child: Text('Guardar Palabra'),
+              child: const Text('Guardar Palabra'),
             ),
-            SizedBox(height: 8),
+            const SizedBox(height: 8),
             FloatingActionButton(
               onPressed: _listen,
               child: Icon(_isListening ? Icons.mic : Icons.mic_none),
             ),
             
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.push(
@@ -262,9 +262,9 @@ class _Pagina1State extends State<Pagina1> {
                   MaterialPageRoute(builder: (context) => Pagina2(words: _words)),
                 );
               },
-              child: Text('Ir a la segunda página'),
+              child: const Text('Ir a la segunda página'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: _words.length,
@@ -276,17 +276,17 @@ class _Pagina1State extends State<Pagina1> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         IconButton(
-                          icon: Icon(Icons.edit),
+                          icon: const Icon(Icons.edit),
                           onPressed: () {
                             _creado.text = '';
                             showDialog(
                               context: context,
                               builder: (context) {
                                 return AlertDialog(
-                                  title: Text("Editar Sentence"),
+                                  title: const Text("Editar Sentence"),
                                   content: TextField(
                                     controller: _creado,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       labelText: "Nueva sentence",
                                     ),
                                   ),
@@ -296,7 +296,7 @@ class _Pagina1State extends State<Pagina1> {
                                         _updSenten(_words[index].id!);
                                         Navigator.of(context).pop();
                                       },
-                                      child: Text("Actualizar"),
+                                      child: const Text("Actualizar"),
                                     ),
                                   ],
                                 );
@@ -305,16 +305,16 @@ class _Pagina1State extends State<Pagina1> {
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.copy),
+                          icon: const Icon(Icons.copy),
                           onPressed: () {
                             Clipboard.setData(ClipboardData(text: _words[index].sentence));
                             ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Texto copiado al portapeles")),
+                              const SnackBar(content: Text("Texto copiado al portapeles")),
                             );
                           },
                         ),
                         IconButton(
-                          icon: Icon(Icons.delete),
+                          icon: const Icon(Icons.delete),
                           onPressed: () async {
                             await DatabaseService().deletePfIng(_words[index].id!);
                             _loadWords();
@@ -326,7 +326,7 @@ class _Pagina1State extends State<Pagina1> {
                 },
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
           ],
         ),
       ),
