@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:first_app/models/pf_ing_model.dart';
-import 'package:first_app/services/database_service.dart'; // Importa DatabaseService
 class EnglishFlashCard extends StatefulWidget {
   //propiedades para personalizar el widget
   final PfIng wordData;
@@ -35,7 +34,6 @@ class EnglishFlashCard extends StatefulWidget {
 
 class _EnglishFlasCardState extends State<EnglishFlashCard> {
   late bool _showFront;
-  DatabaseService _dbService = DatabaseService();
   late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
   @override
@@ -43,7 +41,6 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
     super.initState();
     _showFront = widget.showFrontByDefault;
     _word = widget.wordData;
-    _dbService= DatabaseService();
   }
 
   Future<void> speakf(String text) async {
@@ -86,6 +83,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   }
 
   Widget _buildFrontSide() {
+    //textNoWord="word not found";
     return Container(
       key: const ValueKey<String>('front'),
       height: 350,

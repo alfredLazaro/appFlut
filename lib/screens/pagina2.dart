@@ -43,6 +43,7 @@ class _Pagina2State extends State<Pagina2> {
 
   void onLearnedTap(PfIng word) {
     setState((){
+      _updateLearnStatus(word, word.learn+1); //actualizar el valor
       notLearnedWords.remove(word);
       if(word.learn<nroRepetitions){
         notLearnedWords.add(word);
