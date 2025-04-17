@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class AssemblyAIService {
-  final String apiKey = '57d4ef538f9147e7bfffe39a8a4c5d69'; // ⚠️ Usa una variable de entorno en producción
+  final String apiKey = '5dvcxzvsdf34349'; // ⚠️ Usa una variable de entorno en producción
   final String baseUrl = 'https://api.assemblyai.com/v2/transcript';
 
   // 🔹 Transcribir Audio
