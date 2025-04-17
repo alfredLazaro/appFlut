@@ -40,7 +40,7 @@ class _Pagina2State extends State<Pagina2> {
       _updateLearnStatus(word,0);
       _learnedWords.remove(word);
       notLearnedWords.remove(word);//por si acaso
-      notLearnedWords.add(word);
+      notLearnedWords.insert(0,word);
     });
   }
 
@@ -64,6 +64,8 @@ class _Pagina2State extends State<Pagina2> {
       if(origWord==pTest){
         //lo pongo en lista de aprendidos
         _updateLearnStatus(pOrig, nroRepetitions);//el valor maximo
+        notLearnedWords.remove(pOrig);
+        _learnedWords.remove(pOrig);
         _learnedWords.add(pOrig);
       }else{
         resetLearn(pOrig);

@@ -38,12 +38,13 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   late bool _showFront;
   late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
-  final TextEditingController wordTest= TextEditingController();
+  late final TextEditingController _wordTest;
   @override
   void initState() {
     super.initState();
     _showFront = widget.showFrontByDefault;
     _word = widget.wordData;
+    _wordTest= TextEditingController();
   }
 
   Future<void> speakf(String text) async {
@@ -89,7 +90,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
     //textNoWord="word not found";
     return Container(
       key: const ValueKey<String>('front'),
-      height: 350,
+      height: 450,
       width: double.infinity,
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -192,23 +193,27 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   Widget _buildBackSide() {
     return Container(
       key: const ValueKey<String>('back'),
-      height: 350,
+      height: 450,
       width: double.infinity,
       padding: const EdgeInsets.all(12.0),
       child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
         //test
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children:[
-            TextField(
-              controller: wordTest,
+            Expanded(
+              child: TextField(
+              controller: _wordTest,
               decoration: const InputDecoration(
                 labelText: 'Aprendiste?',
-                //border: OutlineInputBorder(),
+                border: OutlineInputBorder(),
               ),
             ),
+            ),
             ElevatedButton(
-              onPressed: widget.testingWord(wordTest.text),
+              onPressed: (){
+                widget.testingWord(_wordTest.text);
+              },
               child: const Icon(Icons.send)
             ),
           ]
