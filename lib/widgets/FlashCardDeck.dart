@@ -27,7 +27,6 @@ class FlashCardDeck extends StatelessWidget {
             Positioned(
               bottom: i * 4,
               right: i * 4,
-              child: Transform.rotate(angle: i*0.05,
                 child: SizedBox(
                   width: 300,
                   child: EnglishFlashCard(
@@ -40,7 +39,6 @@ class FlashCardDeck extends StatelessWidget {
                     cardColor: cardColor,
                   ),
                 ),
-              ),
             ),
         ],
       ),

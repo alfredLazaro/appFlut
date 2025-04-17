@@ -34,6 +34,13 @@ class _Pagina2State extends State<Pagina2> {
     });
   }
 
+  //funcione reinicio de aprendizaje
+  void resetLearn(PfIng word){
+    setState(() {
+      _updateLearnStatus(word,0);
+    });
+  }
+
   void onLearnedTap(PfIng word) {
     setState((){
       notLearnedWords.remove(word);

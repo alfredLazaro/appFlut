@@ -24,7 +24,7 @@ class EnglishFlashCard extends StatefulWidget {
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
-    this.showFrontByDefault = false,
+    this.showFrontByDefault = true,
   }) : super(key: key);
 
   @override
