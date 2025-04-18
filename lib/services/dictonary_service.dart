@@ -35,7 +35,40 @@ class WordService {
       throw Exception('Error al buscar la definición');
     }
   }
+  Future<List<Map<String, dynamic>>> getAllMeanings(String word) async {
+      // 1. Petición HTTP
+      try {
+        final response = await http.get(
+          Uri.parse('$baseUrl/$word')
+        );
+
+        // 2. Manejo de respuesta
+        if (response.statusCode == 200) {
+          final List<dynamic> jsonList = json.decode(response.body);
+          
+          if (jsonList.isEmpty) {
+            return [];
+          }
+
+          // 3. Procesamiento de datos
+          final Map<String, dynamic> wordData = jsonList[0];
+          final List<dynamic> meaningsJson = wordData['meanings'] ?? [];
+          final List<Map<String, dynamic>> meanings = meaningsJson.cast<Map<String, dynamic>>();
+          
+          return meanings;
+          
+        } else if (response.statusCode == 404) {
+          throw Exception('Palabra no encontrada');
+        } else {
+          throw Exception('Error en la API: ${response.statusCode}');
+        }
+      } catch (e) {
+        throw Exception('Error al obtener significados: $e');
+      }
+  }
+
 }
+
 
 // Ejemplo de clase de proveedor de estado
 class WordProvider extends ChangeNotifier {

@@ -76,7 +76,7 @@ class _Pagina1State extends State<Pagina1> {
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: word,
-      sentence: data['example'] ?? 'no hay ejemplo',
+      sentence: data['example'] ?? '',
       learn: 0,
       imageUrl: priImg['url']['regular'],
       context: "",
@@ -110,7 +110,15 @@ class _Pagina1State extends State<Pagina1> {
       loger.d(value[0]);
       return value;
     }catch(e){
-     throw Exception("error en pagina 1 $e");
+      loger.d("pagina 1, image not found $e");
+      return [
+        {
+          'url':{
+            'regular':'assets/img_defecto.jpg',
+            'small':'assets/img_defecto.jpg',
+          }
+        }
+      ];
     }
   }
   Future<void> _updSenten(int id,String newSentence) async {
@@ -164,7 +172,7 @@ class _Pagina1State extends State<Pagina1> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Página Principal'),
+        title: const Text('Aprendiendo'),
         actions: [
           IconButton(
             icon: const Icon(Icons.navigate_next),
@@ -181,26 +189,25 @@ class _Pagina1State extends State<Pagina1> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Text('Palabra en inglés que no entiendes'),
+            const Text('Palabra a aprender'),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
                 controller: _controller,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: 'Escribe la palabra',
-                  border: OutlineInputBorder(),
+                  border: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    onPressed: _listen, 
+                    icon: Icon(_isListening ? Icons.mic : Icons.mic_none)
+                  ),
                 ),
               ),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _saveWord,
-              child: const Text('Guardar Palabra'),
-            ),
-            const SizedBox(height: 8),
-            FloatingActionButton(
-              onPressed: _listen,
-              child: Icon(_isListening ? Icons.mic : Icons.mic_none),
+              child: const Text('Guardar'),
             ),
             
             const SizedBox(height: 10),
