@@ -1,4 +1,5 @@
 import 'package:first_app/services/dictonary_service.dart';
+import 'package:first_app/widgets/EditDialog.dart';
 import 'package:flutter/material.dart';
 import 'pagina2.dart';
 import '../services/database_service.dart';
@@ -15,7 +16,6 @@ class Pagina1 extends StatefulWidget {
 class _Pagina1State extends State<Pagina1> {
   final loger=Logger();
   final TextEditingController _controller = TextEditingController();
-  final TextEditingController _creado = TextEditingController();
   //hablar a texto
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -24,6 +24,12 @@ class _Pagina1State extends State<Pagina1> {
 
   //api para imagenes
   final apiImg=ImageService();
+  //paginacion 
+  int _currentPage = 0;
+  final PageController _pageController = PageController();
+
+  // Método para calcular el número de páginas
+  int get _pageCount => (_words.length / 3).ceil();
 
   @override
   void initState() {
@@ -86,7 +92,7 @@ class _Pagina1State extends State<Pagina1> {
   Future<Map<String,dynamic>> obtenerDatos(String word) async {
     try{
       final value = await _wordService.getWordDefinition(word);
-      loger.d(".....................servicio diccionario......................................");
+      loger.d("...............servicio diccionario..............");
       loger.d(value);
       return value;
     }catch(e){
@@ -107,8 +113,8 @@ class _Pagina1State extends State<Pagina1> {
      throw Exception("error en pagina 1 $e");
     }
   }
-  Future<void> _updSenten(int id) async {
-    final sentence = _creado.text.trim();
+  Future<void> _updSenten(int id,String newSentence) async {
+    final sentence = newSentence.trim();
     if (sentence.isEmpty) return;
 
     PfIng? currentWord;
@@ -124,10 +130,36 @@ class _Pagina1State extends State<Pagina1> {
       updatedAt: DateTime.now().toIso8601String(),
     );
     await DatabaseService().updatePfIng(updatedWord);
-    _creado.clear();
     _loadWords();
   }
-
+  void _editSentenceNew(PfIng word) {
+    showDialog(
+      context: context,
+      builder: (context) => EditSentenceDialog(
+        initialSentence: word.sentence,
+        onUpdate: (newSentence) async {
+          await _updSenten(word.id!,newSentence);
+          _loadWords(); // Recargar las palabras después de editar
+        },
+      ),
+    );
+  }
+  Future<void> _deleteWord(int id) async {
+    await DatabaseService().deletePfIng(id);
+    _loadWords(); // Recargar las palabras después de eliminar
+    // Ajustar la página si es necesario
+    if (_currentPage >= _pageCount && _pageCount > 0) {
+      setState(() {
+        _currentPage = _pageCount - 1;
+      });
+    }
+  }
+  void _copySentence(String sentence) {
+    Clipboard.setData(ClipboardData(text: sentence));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Texto copiado al portapeles")),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -182,68 +214,84 @@ class _Pagina1State extends State<Pagina1> {
               child: const Text('Ir a la segunda página'),
             ),
             const SizedBox(height: 20),
+            // Widget modificado
             Expanded(
-              child: ListView.builder(
-                itemCount: _words.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(_words[index].word),
-                    subtitle: Text(_words[index].sentence),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            _creado.text = '';
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text("Editar Sentence"),
-                                  content: TextField(
-                                    controller: _creado,
-                                    decoration: const InputDecoration(
-                                      labelText: "Nueva sentence",
-                                    ),
+              child: Column(
+                children: [
+                  // Mostrar solo 3 elementos
+                  Expanded(
+                    child: PageView.builder(
+                      controller: _pageController,
+                      itemCount: _pageCount,
+                      onPageChanged: (index) {
+                        setState(() {
+                          _currentPage = index;
+                        });
+                      },
+                      itemBuilder: (context, pageIndex) {
+                        final startIndex = pageIndex * 3;
+                        final endIndex = (startIndex + 3).clamp(0, _words.length);
+                        final displayedWords = _words.sublist(startIndex, endIndex);
+                        
+                        return ListView.builder(
+                          itemCount: displayedWords.length,
+                          itemBuilder: (context, index) {
+                            final word = displayedWords[index];
+                            return ListTile(
+                              title: Text(word.word),
+                              subtitle: Text(word.sentence),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    icon: const Icon(Icons.edit),
+                                    onPressed: () => _editSentenceNew(word),
                                   ),
-                                  actions: [
-                                    ElevatedButton(
-                                      onPressed: () {
-                                        _updSenten(_words[index].id!);
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: const Text("Actualizar"),
-                                    ),
-                                  ],
-                                );
-                              },
+                                  IconButton(
+                                    icon: const Icon(Icons.copy),
+                                    onPressed: () => _copySentence(word.sentence),
+                                  ),
+                                  IconButton(
+                                    icon: const Icon(Icons.delete),
+                                    onPressed: () => _deleteWord(word.id!),
+                                  ),
+                                ],
+                              ),
                             );
                           },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.copy),
-                          onPressed: () {
-                            Clipboard.setData(ClipboardData(text: _words[index].sentence));
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Texto copiado al portapeles")),
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () async {
-                            await DatabaseService().deletePfIng(_words[index].id!);
-                            _loadWords();
-                          },
-                        ),
-                      ],
+                        );
+                      },
                     ),
-                  );
-                },
+                  ),
+                  
+                  // Controles de paginación
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.chevron_left),
+                        onPressed: _currentPage > 0 
+                            ? () => _pageController.previousPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                )
+                            : null,
+                      ),
+                      Text('Página ${_currentPage + 1} de $_pageCount'),
+                      IconButton(
+                        icon: const Icon(Icons.chevron_right),
+                        onPressed: _currentPage < _pageCount - 1
+                            ? () => _pageController.nextPage(
+                                  duration: const Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                )
+                            : null,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),
