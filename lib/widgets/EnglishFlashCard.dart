@@ -2,11 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:first_app/models/pf_ing_model.dart';
+import 'package:logger/logger.dart';
 class EnglishFlashCard extends StatefulWidget {
   //propiedades para personalizar el widget
   final PfIng wordData;
   final String word;
-  final String imageUrl;
   final int learn;
   final Color cardColor;
   final Color textColor;
@@ -19,7 +19,6 @@ class EnglishFlashCard extends StatefulWidget {
     Key? key,
     required this.wordData,
     required this.word,
-    required this.imageUrl,
     required this.learn,
     required this.onLearned,
     required this.resetLearn,
@@ -35,6 +34,7 @@ class EnglishFlashCard extends StatefulWidget {
 }
 
 class _EnglishFlasCardState extends State<EnglishFlashCard> {
+  final Logger log=Logger();
   late bool _showFront;
   late PfIng _word;
   FlutterTts flutterTts = FlutterTts();
@@ -54,7 +54,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
       await flutterTts.setSpeechRate(0.5);
       await flutterTts.speak(text);
     } catch (e) {
-      print('Error al leer el texto: $e');
+      log.d('Error al leer el texto: $e');
     }
   }
 
@@ -87,7 +87,8 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   }
 
   Widget _buildFrontSide() {
-    //textNoWord="word not found";
+    debugPrint('URL de la imagen: ${_word.imageUrl}');
+    
     return Container(
       key: const ValueKey<String>('front'),
       height: 450,
@@ -100,13 +101,13 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              _word.imageUrl ?? "ruta/defect.png",// no esta definido en el modelo
-              height: 180,
+              _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
+              height: 200,
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  height: 180,
+                  height: 200,
                   width: double.infinity,
                   color: Colors.grey[300],
                   child: const Icon(
@@ -119,7 +120,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  height: 180,
+                  height: 200,
                   width: double.infinity,
                   color: Colors.grey[200],
                   child: Center(

@@ -72,7 +72,7 @@ class _Pagina1State extends State<Pagina1> {
       word: word,
       sentence: data['example'] ?? 'no hay ejemplo',
       learn: 0,
-      imageUrl: priImg['regular'],
+      imageUrl: priImg['url']['regular'],
       context: "",
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
@@ -101,19 +101,9 @@ class _Pagina1State extends State<Pagina1> {
   Future<List<Map<String,dynamic>>> getImages(String word) async{
     try{
       final value= await apiImg.getMinImg(word);
-      loger.d(value);
-      
-      //loger.d('Imágenes encontradas: ${images.length}');
+      loger.d(value[0]);
       return value;
-      //return value;
     }catch(e){
-      /* return {
-        "urls": {
-        "raw": "...",
-        "regular": "...",
-        "small": "..."
-      }
-      } */
      throw Exception("error en pagina 1 $e");
     }
   }
