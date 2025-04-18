@@ -65,6 +65,7 @@ class _Pagina1State extends State<Pagina1> {
     if (word.isEmpty) return;
     
     final data = await obtenerDatos(word);
+    final imgagen= await getImages(word);
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: word,
@@ -100,7 +101,24 @@ class _Pagina1State extends State<Pagina1> {
     try{
       final value= await apiImg.getImg(word);
       loger.d(value['results']);
+      // Mapeamos los datos importantes
+      final List<Map<String, dynamic>> images = 
+          (value['results'] as List).map((photo) {
+        return {
+          'id': photo['id'],
+          'urls': photo['urls'],
+          'user': {
+            'name': photo['user']['name'],
+            'username': photo['user']['username'],
+            'portfolio_url': photo['user']['portfolio_url'],
+          },
+          'alt_description': photo['alt_description'] ?? 'Imagen de $word',
+        };
+      }).toList();
+
+      //loger.d('Imágenes encontradas: ${images.length}');
       return value;
+      //return value;
     }catch(e){
       /* return {
         "urls": {
