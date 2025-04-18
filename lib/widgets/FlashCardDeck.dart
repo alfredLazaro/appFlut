@@ -38,7 +38,7 @@ class FlashCardDeck extends StatelessWidget {
                     wordData: flashCards[i],
                     learn: flashCards[i].learn,
                     word: flashCards[i].word,
-                    imageUrl: '/ruta.png',
+                    imageUrl: flashCards[i].imageUrl ?? "ruta/defect.png",
                     onLearned: () => onLearnedTap(flashCards[i]),
                     resetLearn: ()=> resetLearn(flashCards[i]),
                     testingWord: (cad) => isLearned(flashCards[i],cad),//se supone que le envia la palabra desde el card

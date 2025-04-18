@@ -66,12 +66,13 @@ class _Pagina1State extends State<Pagina1> {
     
     final data = await obtenerDatos(word);
     final imgagen= await getImages(word);
+    final priImg= imgagen[0];
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: word,
       sentence: data['example'] ?? 'no hay ejemplo',
       learn: 0,
-      imageUrl: '',
+      imageUrl: priImg['regular'],
       context: "",
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
@@ -97,25 +98,11 @@ class _Pagina1State extends State<Pagina1> {
     }
   }
 
-  Future<Map<String,dynamic>> getImages(String word) async{
+  Future<List<Map<String,dynamic>>> getImages(String word) async{
     try{
-      final value= await apiImg.getImg(word);
-      loger.d(value['results']);
-      // Mapeamos los datos importantes
-      final List<Map<String, dynamic>> images = 
-          (value['results'] as List).map((photo) {
-        return {
-          'id': photo['id'],
-          'urls': photo['urls'],
-          'user': {
-            'name': photo['user']['name'],
-            'username': photo['user']['username'],
-            'portfolio_url': photo['user']['portfolio_url'],
-          },
-          'alt_description': photo['alt_description'] ?? 'Imagen de $word',
-        };
-      }).toList();
-
+      final value= await apiImg.getMinImg(word);
+      loger.d(value);
+      
       //loger.d('Imágenes encontradas: ${images.length}');
       return value;
       //return value;

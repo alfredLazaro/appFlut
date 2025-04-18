@@ -100,13 +100,13 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              widget.imageUrl,// no esta definido en el modelo
-              height: 150,
+              _word.imageUrl ?? "ruta/defect.png",// no esta definido en el modelo
+              height: 180,
               width: double.infinity,
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Container(
-                  height: 150,
+                  height: 180,
                   width: double.infinity,
                   color: Colors.grey[300],
                   child: const Icon(
@@ -119,7 +119,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
               loadingBuilder: (context, child, loadingProgress) {
                 if (loadingProgress == null) return child;
                 return Container(
-                  height: 150,
+                  height: 180,
                   width: double.infinity,
                   color: Colors.grey[200],
                   child: Center(

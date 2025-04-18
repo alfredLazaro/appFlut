@@ -50,4 +50,46 @@ class ImageService{
       }
     }
   }
+
+  Future<List<Map<String,dynamic>>> getMinImg(String nImg) async{
+    try{
+      final response = await _dio.get(
+        '/search/photos',
+        queryParameters: {
+          'query': nImg,
+          'page': '1',
+          'per_page': '10', //solo quiero 10 results 
+        },
+        options: Options( headers:{
+          'Authorization': 'Client-ID $_apiKey'
+        })
+      );
+      if(response.data['results'] == null || 
+        (response.data['results'] as List).isEmpty){
+          throw Exception('No se encontraron imageners para "$nImg"');
+      }
+      final List<Map<String,dynamic>> images= 
+      (response.data['results'] as List).map((photo){
+        return{
+          'id': photo['id'],
+          'url': {
+          'regular':photo['urls']['regular'],
+          'small': photo['urls']['small'],
+          'thumb':photo['urls']['thumb'],
+          },
+          'user':{
+            'name': photo['user']['name']
+          },
+          'alt_description': photo['alt_description'] ?? 'Imagen de $nImg',
+        };
+      }).toList();
+      return images;
+    }on DioException catch(e){
+      if(e.response != null){
+        throw Exception("Unsplash API Error ${e.response?.statusCode}: ${e.response?.data}");
+      } else {
+        throw Exception("Network error: ${e.message}");
+      }
+    }
+  }
 }
