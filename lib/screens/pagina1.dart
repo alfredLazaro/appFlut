@@ -6,6 +6,7 @@ import '../models/pf_ing_model.dart';
 import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
 import 'package:logger/logger.dart';
+import 'package:first_app/services/apiImage.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -21,7 +22,8 @@ class _Pagina1State extends State<Pagina1> {
   List<PfIng> _words = [];
   final WordService _wordService = WordService();
 
-  
+  //api para imagenes
+  final apiImg=ImageService();
 
   @override
   void initState() {
@@ -68,6 +70,8 @@ class _Pagina1State extends State<Pagina1> {
       word: word,
       sentence: data['example'] ?? 'no hay ejemplo',
       learn: 0,
+      imageUrl: '',
+      context: "",
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );
@@ -92,36 +96,39 @@ class _Pagina1State extends State<Pagina1> {
     }
   }
 
+  Future<Map<String,dynamic>> getImages(String word) async{
+    try{
+      final value= await apiImg.getImg(word);
+      loger.d(value['results']);
+      return value;
+    }catch(e){
+      /* return {
+        "urls": {
+        "raw": "...",
+        "regular": "...",
+        "small": "..."
+      }
+      } */
+     throw Exception("error en pagina 1 $e");
+    }
+  }
   Future<void> _updSenten(int id) async {
-    String sentence = _creado.text;
+    final sentence = _creado.text.trim();
     if (sentence.isEmpty) return;
 
-    PfIng? currentWrd = _words.firstWhere(
-      (word) => word.id == id,
-      orElse: () => PfIng(
-        id: id,
-        definicion: '',
-        word: '',
-        sentence: '',
-        learn: 0,
-        createdAt: DateTime.now().toIso8601String(),
-        updatedAt: DateTime.now().toIso8601String(),
-      ),
-    );
+    PfIng? currentWord;
+    try {
+      currentWord = _words.firstWhere((w) => w.id == id);
+    } catch (_) {
+      currentWord =null;
+      return; // No encontró nada, salimos de la función
+    }
 
-    if (currentWrd.word.isEmpty) return;
-
-    PfIng newWord = PfIng(
-      id: id,
-      definicion: currentWrd.definicion,
-      word: currentWrd.word,
+    final updatedWord = currentWord.copyWith(
       sentence: sentence,
-      learn: currentWrd.learn,
-      createdAt: currentWrd.createdAt,
       updatedAt: DateTime.now().toIso8601String(),
     );
-    await DatabaseService().updatePfIng(newWord);
-
+    await DatabaseService().updatePfIng(updatedWord);
     _creado.clear();
     _loadWords();
   }

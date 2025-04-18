@@ -10,7 +10,7 @@ class ImageService{
   String? _basUrl;
   late Dio _dio;
   Future<void> _init() async{
-    await dotenv.load(fileName: '.env');
+    await dotenv.load(fileName: 'assets/.env');
     _apiKey =dotenv.env['KEY_UNS'];
     _basUrl = dotenv.env['URL_UNS'];
     if (_apiKey == null || _apiKey!.isEmpty) {
@@ -44,9 +44,9 @@ class ImageService{
       return response.data as Map<String,dynamic>;
     }on DioException catch (e){
       if (e.response != null) {
-        throw Exception("Error ${e.response?.statusCode}: ${e.response?.data}");
+        throw Exception("Unsplash API Error ${e.response?.statusCode}: ${e.response?.data}");
       } else {
-        throw Exception("Error de conexión: ${e.message}");
+        throw Exception("Network error: ${e.message}");
       }
     }
   }

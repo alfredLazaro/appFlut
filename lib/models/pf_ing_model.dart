@@ -21,6 +21,26 @@ class PfIng{
         required this.updatedAt,
     });
 
+    PfIng copyWith({
+        int? id,
+        String? word,
+        String? definicion,
+        String? sentence,
+        int? learn,
+        String? createdAt,
+        String? updatedAt,
+      }) {
+        return PfIng(
+          id: id ?? this.id,
+          word: word ?? this.word,
+          definicion: definicion ?? this.definicion,
+          sentence: sentence ?? this.sentence,
+          learn: learn ?? this.learn,
+          createdAt: createdAt ?? this.createdAt,
+          updatedAt: updatedAt ?? this.updatedAt,
+        );
+      }
+
     factory PfIng.fromMap(Map<String, dynamic> map){
         return PfIng(
             id: map['id'],
