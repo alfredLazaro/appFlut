@@ -91,7 +91,6 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
 
   Widget _buildFrontSide() {
     debugPrint('URL de la imagen: ${_word.imageUrl}');
-    
       return LayoutBuilder(
         builder: (context, constraints) {
         return Container(
@@ -109,37 +108,73 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                 height: constraints.maxHeight*0.5,
                 width: double.infinity,
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(8.0),
-                  child: Image.network(
-                    _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: Stack(
+                        fit: StackFit.expand,
+                  children: [
+                    //Imagen principal
+                      Image.network(
+                        _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
+                        fit: BoxFit.cover,
                         width: double.infinity,
-                        color: Colors.grey[300],
-                        child: Icon(
-                          Icons.image_not_supported,
-                          size: constraints.maxHeight*0.1,
-                          color: Colors.grey,
-                        ),
-                      );
-                    },
-                    loadingBuilder: (context, child, loadingProgress) {
-                      if (loadingProgress == null) return child;
-                      return Container(
-                        color: Colors.grey[200],
-                        child: Center(
-                          child: CircularProgressIndicator(
-                            value: loadingProgress.expectedTotalBytes != null
-                                ? loadingProgress.cumulativeBytesLoaded /
-                                    loadingProgress.expectedTotalBytes!
-                                : null,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Container(
+                            width: double.infinity,
+                            color: Colors.grey[300],
+                            child: Icon(
+                              Icons.image_not_supported,
+                              size: constraints.maxHeight*0.1,
+                              color: Colors.grey,
+                            ),
+                          );
+                        },
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          return Container(
+                            color: Colors.grey[200],
+                            child: Center(
+                              child: CircularProgressIndicator(
+                                value: loadingProgress.expectedTotalBytes != null
+                                    ? loadingProgress.cumulativeBytesLoaded /
+                                        loadingProgress.expectedTotalBytes!
+                                    : null,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    //icono de autor en la esquina superio derecha
+                    //if(_word.autor != null && _word.autor!.isNotEmpty)
+                      Positioned(
+                        top: 10,
+                        right: 10,
+                        child: GestureDetector(
+                          onTap: (){
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text('Autor: aqui pongo el nombre del aotr'),
+                                duration: const Duration(seconds: 2),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.all(6),
+                            decoration: BoxDecoration(
+                              color: Colors.black.withOpacity(0.5),
+                              shape: BoxShape.circle,
+                            ),
+                            child: const Icon(
+                              Icons.info_rounded,
+                              size: 18,
+                              color: Colors.white,
+                            )
                           ),
                         ),
-                      );
-                    },
-                  ),
-                ),
+                      ),
+                  ]
+                    ),
+                ), 
+                
               ),
               
               const SizedBox(height: 10),
