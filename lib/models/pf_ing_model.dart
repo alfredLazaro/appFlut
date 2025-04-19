@@ -4,7 +4,7 @@ class PfIng{
     final String word;
     final String sentence;
     int learn;
-    String? imageUrl = '/ruta.png';
+    String? imageUrl = 'assets/img_defecto.jpg';
     String? context;
     String createdAt;
     String updatedAt;
@@ -15,7 +15,7 @@ class PfIng{
         required this.word,
         required this.sentence,
         required this.learn,
-        this.imageUrl = '/ruta.png',
+        this.imageUrl = 'assets/img_defecto.jpg',
         this.context,
         required this.createdAt,
         required this.updatedAt,
@@ -27,6 +27,8 @@ class PfIng{
         String? definicion,
         String? sentence,
         int? learn,
+        String? imageUrl,
+        String? context,
         String? createdAt,
         String? updatedAt,
       }) {
@@ -36,6 +38,8 @@ class PfIng{
           definicion: definicion ?? this.definicion,
           sentence: sentence ?? this.sentence,
           learn: learn ?? this.learn,
+          imageUrl: imageUrl ?? this.imageUrl,
+          context: context ?? this.context,
           createdAt: createdAt ?? this.createdAt,
           updatedAt: updatedAt ?? this.updatedAt,
         );

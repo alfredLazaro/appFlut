@@ -30,30 +30,7 @@ class FlashCardDeck extends StatelessWidget {
         child: isPortrait
           ? _buildPortraitLayout()
           : _buildLandscapeLayout(),
-        /* child: Stack(
-          alignment: Alignment.center,
-          children: [
-            for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
-              Positioned(
-                bottom: i * 5,
-                right: i * 5,
-                  child: SizedBox(
-                    width: 300,
-                    height: 400,
-                    child: EnglishFlashCard(
-                      key: ValueKey(flashCards[i].id),
-                      wordData: flashCards[i],
-                      learn: flashCards[i].learn,
-                      word: flashCards[i].word,
-                      onLearned: () => onLearnedTap(flashCards[i]),
-                      resetLearn: ()=> resetLearn(flashCards[i]),
-                      testingWord: (cad) => isLearned(flashCards[i],cad),//se supone que le envia la palabra desde el card
-                      cardColor: cardColor,
-                    ),
-                  ),
-              ),
-          ],
-        ), */
+        
       ),
     );
   }
@@ -63,8 +40,8 @@ class FlashCardDeck extends StatelessWidget {
           children: [
             for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
               Positioned(
-                bottom: i * 5,
-                right: i * 5,
+                top: i * 5,
+                left: i * 5,
                   child: SizedBox(
                     width: 300,
                     height: 400,

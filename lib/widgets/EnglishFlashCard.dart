@@ -177,7 +177,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                 
               ),
               
-              const SizedBox(height: 10),
+              const SizedBox(height: 2),
               //Palabra en ingles
               Flexible(
                 child: FittedBox(
@@ -193,7 +193,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                         ),
                 ),
               ),
-              const SizedBox(height: 10),
+              const SizedBox(height: 5),
               //Instruccion para voltear
               Text(
                 'Tap to see definition',
@@ -203,7 +203,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                   color: widget.textColor.withOpacity(0.6),
                 ),
               ),
-              const SizedBox(height: 15),
+              const SizedBox(height: 10),
               //botones de control
               SizedBox(
                 height: constraints.maxHeight * 0.2,
@@ -241,7 +241,6 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                   ],
                 )
               ),
-              
             ],
           ),
       );
@@ -298,7 +297,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                 ],
               ),
 
-              SizedBox(height: constraints.maxHeight * 0.03),
+              SizedBox(height: constraints.maxHeight * 0.02),
 
               // Definición
               _buildDefinitionSection(
@@ -307,7 +306,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                 () => speakf(_word.definicion),
               ),
 
-              SizedBox(height: constraints.maxHeight * 0.03),
+              SizedBox(height: constraints.maxHeight * 0.02),
 
               // Ejemplo
               _buildExampleSection(

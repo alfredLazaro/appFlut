@@ -15,11 +15,15 @@ class _Pagina2State extends State<Pagina2> {
   final DatabaseService _dbService = DatabaseService();
   late List<PfIng> notLearnedWords;
   late List<PfIng> _learnedWords;
-  final nroRepetitions = 4; // Número de repeticiones para considerar "aprendido"
+  final nroRepetitions = 5; // Número de repeticiones para considerar "aprendido"
+  int nAprendids=0;
+  int cantPalabs=0;
   @override
   void initState(){
     super.initState();
     _filterWords(); //inicializa 
+    nAprendids=_learnedWords.length;
+    cantPalabs=widget.words.length;
   }
 
   // Función para actualizar el estado de aprendizaje de la palabra
@@ -41,6 +45,7 @@ class _Pagina2State extends State<Pagina2> {
       _learnedWords.remove(word);
       notLearnedWords.remove(word);//por si acaso
       notLearnedWords.insert(0,word);
+      nAprendids-=1;
     });
   }
 
@@ -52,6 +57,7 @@ class _Pagina2State extends State<Pagina2> {
       if(word.learn<nroRepetitions){
         notLearnedWords.insert(0,word);
       }else{
+        nAprendids+=1;
         _learnedWords.add(word);
       }
     });
@@ -67,6 +73,7 @@ class _Pagina2State extends State<Pagina2> {
         notLearnedWords.remove(pOrig);
         _learnedWords.remove(pOrig);
         _learnedWords.add(pOrig);
+        nAprendids+=1;
       }else{
         resetLearn(pOrig);
       }
@@ -82,10 +89,6 @@ class _Pagina2State extends State<Pagina2> {
         appBar: AppBar(
           toolbarHeight: isLandscape ? 40.0 : null,
           automaticallyImplyLeading: false,
-          /* leading: IconButton(
-            icon: const Icon(Icons.arrow_back),
-            onPressed: () => Navigator.pop(context),
-          ), */
           title: const SizedBox.shrink(),
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(isLandscape ? 8.0: 25.0),
@@ -114,14 +117,65 @@ class _Pagina2State extends State<Pagina2> {
             Positioned(
               top: MediaQuery.of(context).padding.top + 8, // Respeta el notch y da un pequeño margen
               left: 8,
-              child: FloatingActionButton(
-                mini: true, // Tamaño más pequeño
-                heroTag: 'backButton', // Necesario si hay otros FABs
-                onPressed: () => Navigator.pop(context),
-                child: const Icon(Icons.arrow_back),
-                backgroundColor: Colors.white, // Color de fondo
-                foregroundColor: Colors.black, // Color del icono
-                elevation: 4.0, // Sombra
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    mini: true, // Tamaño más pequeño
+                    heroTag: 'backButton', // Necesario si hay otros FABs
+                    onPressed: () => Navigator.pop(context),
+                    child: const Icon(Icons.arrow_back),
+                    backgroundColor: Colors.white, // Color de fondo
+                    foregroundColor: Colors.black, // Color del icono
+                    elevation: 4.0, // Sombra
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blueAccent,//color de fondo del contador
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '$nAprendids',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      color: Colors.blueGrey,//color de fondo del contador
+                      shape: BoxShape.circle,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 4,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Text(
+                      '$cantPalabs',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ]
               ),
             ),
           ],
