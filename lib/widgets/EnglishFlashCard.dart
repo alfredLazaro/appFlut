@@ -376,7 +376,7 @@ Widget _buildExampleSection(
       Text(
         '"$example"',
         style: TextStyle(
-          fontSize: constraints.maxHeight * 0.025, // ~16px
+          fontSize: constraints.maxHeight * 0.04, // ~16px
           fontStyle: FontStyle.italic,
           color: widget.textColor,
         ),
