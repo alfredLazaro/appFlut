@@ -92,220 +92,297 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   Widget _buildFrontSide() {
     debugPrint('URL de la imagen: ${_word.imageUrl}');
     
-    return Container(
-      key: const ValueKey<String>('front'),
-      height: 450,
-      width: double.infinity,
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          //imagen de la palabra
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8.0),
-            child: Image.network(
-              _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
-              height: 200,
-              width: double.infinity,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) {
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.grey[300],
-                  child: const Icon(
-                    Icons.image_not_supported,
-                    size: 50,
-                    color: Colors.grey,
-                  ),
-                );
-              },
-              loadingBuilder: (context, child, loadingProgress) {
-                if (loadingProgress == null) return child;
-                return Container(
-                  height: 200,
-                  width: double.infinity,
-                  color: Colors.grey[200],
-                  child: Center(
-                    child: CircularProgressIndicator(
-                      value: loadingProgress.expectedTotalBytes != null
-                          ? loadingProgress.cumulativeBytesLoaded /
-                              loadingProgress.expectedTotalBytes!
-                          : null,
-                    ),
-                  ),
-                );
-              },
-            ),
+      return LayoutBuilder(
+        builder: (context, constraints) {
+        return Container(
+          key: const ValueKey<String>('front'),
+          constraints: BoxConstraints(
+            minHeight: constraints.maxHeight,
+            maxWidth: constraints.maxWidth,
           ),
-          const SizedBox(height: 20),
-          //Palabra en ingles
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                      _word.word.isNotEmpty == true ? _word.word : 'Word not found',
-                      style: TextStyle(
-                        fontSize: 28,
-                        fontWeight: FontWeight.bold,
-                        color: widget.textColor,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-            ),
-          ),
-          const SizedBox(height: 10),
-          //Instruccion para voltear
-          Text(
-            'Tap to see definition',
-            style: TextStyle(
-              fontSize: 14,
-              fontStyle: FontStyle.italic,
-              color: widget.textColor.withOpacity(0.6),
-            ),
-          ),
-          const SizedBox(height: 15),
-          //botones de control
-          Row(
+          padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+          child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              ElevatedButton.icon(
-                onPressed: () {
-                  widget.onLearned(); //llamo funcion incremento en pagina 2
-                },
-                icon: const Icon(Icons.check),
-                label: const Text('Learned'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
-                  foregroundColor: Colors.white,
+              //imagen de la palabra
+              SizedBox(
+                height: constraints.maxHeight*0.5,
+                width: double.infinity,
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8.0),
+                  child: Image.network(
+                    _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) {
+                      return Container(
+                        width: double.infinity,
+                        color: Colors.grey[300],
+                        child: Icon(
+                          Icons.image_not_supported,
+                          size: constraints.maxHeight*0.1,
+                          color: Colors.grey,
+                        ),
+                      );
+                    },
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) return child;
+                      return Container(
+                        color: Colors.grey[200],
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            value: loadingProgress.expectedTotalBytes != null
+                                ? loadingProgress.cumulativeBytesLoaded /
+                                    loadingProgress.expectedTotalBytes!
+                                : null,
+                          ),
+                        ),
+                      );
+                    },
+                  ),
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  widget.resetLearn(); //llamo la funcion reset en pagina 2
-                },
-                icon: const Icon(Icons.restart_alt),
-                label: const Text("Again"),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+              
+              const SizedBox(height: 10),
+              //Palabra en ingles
+              Flexible(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                          _word.word.isNotEmpty == true ? _word.word : 'Word not found',
+                          style: TextStyle(
+                            fontSize: constraints.maxHeight * 0.1,
+                            fontWeight: FontWeight.bold,
+                            color: widget.textColor,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
                 ),
-              )
+              ),
+              const SizedBox(height: 10),
+              //Instruccion para voltear
+              Text(
+                'Tap to see definition',
+                style: TextStyle(
+                  fontSize: constraints.maxHeight*0.02,
+                  fontStyle: FontStyle.italic,
+                  color: widget.textColor.withOpacity(0.6),
+                ),
+              ),
+              const SizedBox(height: 15),
+              //botones de control
+              SizedBox(
+                height: constraints.maxHeight * 0.2,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        widget.onLearned(); //llamo funcion incremento en pagina 2
+                      },
+                      icon: Icon(Icons.check, size: constraints.maxHeight*0.04),
+                      label: Text(
+                        'Learned',
+                        style: TextStyle(fontSize: constraints.maxHeight* 0.03),
+                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.green,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                    ElevatedButton.icon(
+                      onPressed: () {
+                        widget.resetLearn(); //llamo la funcion reset en pagina 2
+                      },
+                      icon: Icon(Icons.restart_alt, size: constraints.maxHeight * 0.04),
+                      label: Text(
+                        "Again",
+                        style: TextStyle(fontSize: constraints.maxHeight*0.03),
+                        ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                      ),
+                    )
+                  ],
+                )
+              ),
+              
             ],
-          )
-            
-        ],
-      ),
+          ),
+      );
+        }
     );
   }
 
   Widget _buildBackSide() {
-    return Container(
-      key: const ValueKey<String>('back'),
-      height: 450,
-      width: double.infinity,
-      padding: const EdgeInsets.all(12.0),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, 
-      children: [
-        //test
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children:[
-            Expanded(
-              child: TextField(
-              controller: _wordTest,
-              decoration: const InputDecoration(
-                labelText: 'Aprendiste?',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            ),
-            ElevatedButton(
-              onPressed: (){
-                widget.testingWord(_wordTest.text);
-              },
-              child: const Icon(Icons.send)
-            ),
-          ]
-        ),
-        //definicion
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(
-            child: Text(
-              'Definition:',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: widget.textColor,
-              ),
-            ),
+  return LayoutBuilder(
+    builder: (context, constraints) {
+      
+      return Container(
+          key: const ValueKey<String>('back'),
+          padding: EdgeInsets.all(constraints.maxHeight * 0.02),
+          
+        constraints: BoxConstraints(
+            minHeight: constraints.maxHeight,
+            maxWidth: constraints.maxWidth,
           ),
-          const SizedBox(width: 10),
-          IconButton(
-            icon: const Icon(Icons.volume_up),
-            onPressed: () => speakf(_word.definicion ),
-          ),
-        ]),
-
-        const SizedBox(height: 3),
-        Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(
-            child: Text(
-              _word.definicion,
-              style: TextStyle(
-                fontSize: 16,
-                color: widget.textColor,
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ),
-          const SizedBox(width: 10),
-        ]),
-
-        const SizedBox(height: 10),
-        //ejemplo
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Expanded(
-              child: 
-                Text(
-                  'Example:',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: widget.textColor,
+      
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.all(constraints.maxHeight* 0.02),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Test de aprendizaje
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: TextField(
+                      controller: _wordTest,
+                      decoration: InputDecoration(
+                        labelText: 'Aprendiste?',
+                        border: OutlineInputBorder(),
+                        isDense: true, // Reduce altura interna
+                        contentPadding: EdgeInsets.all(constraints.maxHeight * 0.015),
+                      ),
+                    ),
                   ),
+                  SizedBox(width: constraints.maxWidth * 0.02),
+                  Expanded(
+                    flex: 1,
+                    child: ElevatedButton(
+                      onPressed: () => widget.testingWord(_wordTest.text),
+                      style: ElevatedButton.styleFrom(
+                        padding: EdgeInsets.all(constraints.maxHeight * 0.015),
+                      ),
+                      child: Icon(
+                        Icons.send,
+                        size: constraints.maxHeight * 0.04,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: constraints.maxHeight * 0.03),
+
+              // Definición
+              _buildDefinitionSection(
+                constraints,
+                _word.definicion,
+                () => speakf(_word.definicion),
+              ),
+
+              SizedBox(height: constraints.maxHeight * 0.03),
+
+              // Ejemplo
+              _buildExampleSection(
+                constraints,
+                _word.sentence,
+                () => speakf(_word.sentence),
+              ),
+
+              SizedBox(height: constraints.maxHeight * 0.04),
+
+              // Instrucción para voltear
+              Text(
+                'Tap to see word again',
+                style: TextStyle(
+                  fontSize: constraints.maxHeight * 0.022,
+                  fontStyle: FontStyle.italic,
+                  color: widget.textColor.withOpacity(0.6),
                 ),
-            ),
-            const SizedBox(width: 10),
-            IconButton(
-              onPressed: () => speakf(_word.sentence),
-              icon: const Icon(Icons.volume_up),
-            ),
-          ]
-        ),
-        const SizedBox(height: 8),
-        Text(
-          '"${_word.sentence}"',
-          style: TextStyle(
-            fontSize: 16,
-            fontStyle: FontStyle.italic,
-            color: widget.textColor,
-          ),
-          textAlign: TextAlign.center,
-        ),
-        const SizedBox(height: 20),
-        // Instruccion para voltear
-        Text(
-          'Tap to see word again',
-          style: TextStyle(
-            fontSize: 14,
-            fontStyle: FontStyle.italic,
-            color: widget.textColor.withOpacity(0.6),
+              ),
+            ],
           ),
         ),
-      ]),
-    );
-  }
+      ),
+  );
+    },
+  );
+}
+
+Widget _buildDefinitionSection(
+  BoxConstraints constraints,
+  String definition,
+  VoidCallback onSpeak,
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Text(
+            'Definition:',
+            style: TextStyle(
+              fontSize: constraints.maxHeight * 0.04, // ~18px en altura estándar
+              fontWeight: FontWeight.bold,
+              color: widget.textColor,
+            ),
+          ),
+          Spacer(),
+          IconButton(
+            icon: Icon(
+              Icons.volume_up,
+              size: constraints.maxHeight * 0.05,
+            ),
+            onPressed: onSpeak,
+          ),
+        ],
+      ),
+      SizedBox(height: constraints.maxHeight * 0.005),
+      Text(
+        definition,
+        style: TextStyle(
+          fontSize: constraints.maxHeight * 0.04, // ~16px
+          color: widget.textColor,
+        ),
+        textAlign: TextAlign.justify,
+      ),
+    ],
+  );
+}
+
+Widget _buildExampleSection(
+  BoxConstraints constraints,
+  String example,
+  VoidCallback onSpeak,
+) {
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        children: [
+          Text(
+            'Example:',
+            style: TextStyle(
+              fontSize: constraints.maxHeight * 0.04, // ~18px
+              fontWeight: FontWeight.bold,
+              color: widget.textColor,
+            ),
+          ),
+          Spacer(),
+          IconButton(
+            icon: Icon(
+              Icons.volume_up,
+              size: constraints.maxHeight * 0.035,
+            ),
+            onPressed: onSpeak,
+          ),
+        ],
+      ),
+      SizedBox(height: constraints.maxHeight * 0.005),
+      Text(
+        '"$example"',
+        style: TextStyle(
+          fontSize: constraints.maxHeight * 0.025, // ~16px
+          fontStyle: FontStyle.italic,
+          color: widget.textColor,
+        ),
+        textAlign: TextAlign.justify,
+      ),
+    ],
+  );
+}
 }

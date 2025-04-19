@@ -36,6 +36,7 @@ class FlashCardDeck extends StatelessWidget {
                 right: i * 5,
                   child: SizedBox(
                     width: 300,
+                    height: 400,
                     child: EnglishFlashCard(
                       key: ValueKey(flashCards[i].id),
                       wordData: flashCards[i],
