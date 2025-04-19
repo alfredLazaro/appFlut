@@ -20,35 +20,38 @@ class FlashCardDeck extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return Center(
-    child: SizedBox(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: MediaQuery.of(context).size.height * 0.6,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
-            Positioned(
-              bottom: i * 6,
-              right: i * 6,
-                child: SizedBox(
-                  width: 300,
-                  child: EnglishFlashCard(
-                    key: ValueKey(flashCards[i].id),
-                    wordData: flashCards[i],
-                    learn: flashCards[i].learn,
-                    word: flashCards[i].word,
-                    onLearned: () => onLearnedTap(flashCards[i]),
-                    resetLearn: ()=> resetLearn(flashCards[i]),
-                    testingWord: (cad) => isLearned(flashCards[i],cad),//se supone que le envia la palabra desde el card
-                    cardColor: cardColor,
+    final screenSize = MediaQuery.of(context).size;
+    final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
+    return Center(
+      child: SizedBox(
+        width: min(400.0, screenSize.width* 0.95),//ancho maximo de 400 0 de 95% de pantalla
+        height: isPortrait ? screenSize.height * 0.65: screenSize.height * 0.8,
+        
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
+              Positioned(
+                bottom: i * 5,
+                right: i * 5,
+                  child: SizedBox(
+                    width: 300,
+                    child: EnglishFlashCard(
+                      key: ValueKey(flashCards[i].id),
+                      wordData: flashCards[i],
+                      learn: flashCards[i].learn,
+                      word: flashCards[i].word,
+                      onLearned: () => onLearnedTap(flashCards[i]),
+                      resetLearn: ()=> resetLearn(flashCards[i]),
+                      testingWord: (cad) => isLearned(flashCards[i],cad),//se supone que le envia la palabra desde el card
+                      cardColor: cardColor,
+                    ),
                   ),
-                ),
-            ),
-        ],
+              ),
+          ],
+        ),
       ),
-    ),
-  );
-}
+    );
+  }
 
 }

@@ -15,7 +15,7 @@ class Pagina1 extends StatefulWidget {
 
 class _Pagina1State extends State<Pagina1> {
   final loger=Logger();
-  final TextEditingController _controller = TextEditingController();
+  final TextEditingController _captWord = TextEditingController();
   //hablar a texto
   late stt.SpeechToText _speech;
   bool _isListening = false;
@@ -49,7 +49,7 @@ class _Pagina1State extends State<Pagina1> {
         _speech.listen(
           onResult: (val) => setState(() {
             //_text = val.recognizedWords;
-            _controller.text = val.recognizedWords; //
+            _captWord.text = val.recognizedWords; //
           }),
         );
       }
@@ -67,7 +67,7 @@ class _Pagina1State extends State<Pagina1> {
   }
 
   Future<void> _saveWord() async {
-    String word = _controller.text;
+    String word = _captWord.text;
     if (word.isEmpty) return;
     
     final data = await obtenerDatos(word);
@@ -84,7 +84,7 @@ class _Pagina1State extends State<Pagina1> {
       updatedAt: DateTime.now().toIso8601String(),
     );
     await DatabaseService().insertPfIng(newWord);
-    _controller.clear();
+    _captWord.clear();
     _loadWords();
 
   }
@@ -174,8 +174,8 @@ class _Pagina1State extends State<Pagina1> {
       appBar: AppBar(
         title: const Text('Aprendiendo'),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.navigate_next),
+          ElevatedButton(
+            child: const Icon(Icons.navigate_next),
             onPressed: () {
               Navigator.push(
                 context,
@@ -193,7 +193,7 @@ class _Pagina1State extends State<Pagina1> {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20),
               child: TextField(
-                controller: _controller,
+                controller: _captWord,
                 decoration: InputDecoration(
                   labelText: 'Escribe la palabra',
                   border: const OutlineInputBorder(),
@@ -211,16 +211,6 @@ class _Pagina1State extends State<Pagina1> {
             ),
             
             const SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Pagina2(words: _words)),
-                );
-              },
-              child: const Text('Ir a la segunda página'),
-            ),
-            const SizedBox(height: 20),
             // Widget modificado
             Expanded(
               child: Column(

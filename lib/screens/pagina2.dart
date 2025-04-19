@@ -75,23 +75,55 @@ class _Pagina2State extends State<Pagina2> {
 
   @override
   Widget build(BuildContext context) {
-    
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Palabras Guardadas'),
-          bottom: const TabBar(
-            tabs: [
-              Tab(text: 'No Aprendido ❌'),
-              Tab(text: 'Aprendido ✅'),
-            ],
+          toolbarHeight: isLandscape ? 40.0 : null,
+          automaticallyImplyLeading: false,
+          /* leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => Navigator.pop(context),
+          ), */
+          title: const SizedBox.shrink(),
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(isLandscape ? 8.0: 25.0),
+            child:const TabBar(
+              indicatorColor: Colors.blue, // Color de la línea
+              indicatorWeight: 2.0, // Grosor de la línea
+              labelColor: Colors.transparent, // Hace el texto transparente
+              unselectedLabelColor: Colors.transparent, // También para el no seleccionado
+              labelPadding: EdgeInsets.zero,
+              tabs: [
+                Tab(icon: Icon(Icons.close, color: Colors.black,size: 17)), // Mantiene el color
+                Tab(icon: Icon(Icons.check, color: Colors.green,size: 17)),
+              ],
+            ),
           ),
         ),
-        body: TabBarView(
+        body: Stack(
           children: [
-            FlashCardDeck(flashCards: notLearnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn, isLearned: isLearned,),
-            FlashCardDeck(flashCards: _learnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn, isLearned: isLearned,),
+            TabBarView(
+              children: [
+                FlashCardDeck(flashCards: notLearnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn, isLearned: isLearned),
+                FlashCardDeck(flashCards: _learnedWords, onLearnedTap: onLearnedTap, resetLearn: resetLearn, isLearned: isLearned),
+              ],
+            ),
+            // Botón flotante de retroceso
+            Positioned(
+              top: MediaQuery.of(context).padding.top + 8, // Respeta el notch y da un pequeño margen
+              left: 8,
+              child: FloatingActionButton(
+                mini: true, // Tamaño más pequeño
+                heroTag: 'backButton', // Necesario si hay otros FABs
+                onPressed: () => Navigator.pop(context),
+                child: const Icon(Icons.arrow_back),
+                backgroundColor: Colors.white, // Color de fondo
+                foregroundColor: Colors.black, // Color del icono
+                elevation: 4.0, // Sombra
+              ),
+            ),
           ],
         ),
       ),

@@ -60,6 +60,8 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final isPortrait = screenSize.height > screenSize.width;
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -68,6 +70,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
       },
       child: Card(
         elevation: 5.0,
+        margin: EdgeInsets.all(isPortrait ? 8.0:4.0),//nose que cambia
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius),
         ),
@@ -137,14 +140,19 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
           ),
           const SizedBox(height: 20),
           //Palabra en ingles
-          Text(
-            _word.word.isNotEmpty == true ? _word.word : 'Word not found',
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-              color: widget.textColor,
+          Flexible(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                      _word.word.isNotEmpty == true ? _word.word : 'Word not found',
+                      style: TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: widget.textColor,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
             ),
-            textAlign: TextAlign.center,
           ),
           const SizedBox(height: 10),
           //Instruccion para voltear
@@ -197,7 +205,8 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
       height: 450,
       width: double.infinity,
       padding: const EdgeInsets.all(12.0),
-      child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+      child: Column(mainAxisAlignment: MainAxisAlignment.center, 
+      children: [
         //test
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
