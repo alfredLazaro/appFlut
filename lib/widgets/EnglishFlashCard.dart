@@ -152,7 +152,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                           onTap: (){
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Autor: aqui pongo el nombre del aotr'),
+                                content: Text('Autor: aqui pongo el nombre del aotr \n fuente: nombre de fuente'),
                                 duration: const Duration(seconds: 2),
                               ),
                             );
@@ -252,11 +252,9 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   Widget _buildBackSide() {
   return LayoutBuilder(
     builder: (context, constraints) {
-      
       return Container(
           key: const ValueKey<String>('back'),
           padding: EdgeInsets.all(constraints.maxHeight * 0.02),
-          
         constraints: BoxConstraints(
             minHeight: constraints.maxHeight,
             maxWidth: constraints.maxWidth,
@@ -277,7 +275,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                       controller: _wordTest,
                       decoration: InputDecoration(
                         labelText: 'Aprendiste?',
-                        border: OutlineInputBorder(),
+                        border: const OutlineInputBorder(),
                         isDense: true, // Reduce altura interna
                         contentPadding: EdgeInsets.all(constraints.maxHeight * 0.015),
                       ),
@@ -356,7 +354,7 @@ Widget _buildDefinitionSection(
               color: widget.textColor,
             ),
           ),
-          Spacer(),
+          const Spacer(),
           IconButton(
             icon: Icon(
               Icons.volume_up,
@@ -397,11 +395,11 @@ Widget _buildExampleSection(
               color: widget.textColor,
             ),
           ),
-          Spacer(),
+          const Spacer(),
           IconButton(
             icon: Icon(
               Icons.volume_up,
-              size: constraints.maxHeight * 0.035,
+              size: constraints.maxHeight * 0.05,
             ),
             onPressed: onSpeak,
           ),
