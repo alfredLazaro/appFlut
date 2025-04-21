@@ -45,7 +45,9 @@ class _Pagina2State extends State<Pagina2> {
       _learnedWords.remove(word);
       notLearnedWords.remove(word);//por si acaso
       notLearnedWords.insert(0,word);
-      nAprendids-=1;
+      if(_learnedWords.isNotEmpty){
+        nAprendids-=1;
+      }
     });
   }
 

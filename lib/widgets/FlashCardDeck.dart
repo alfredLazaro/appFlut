@@ -38,10 +38,10 @@ class FlashCardDeck extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
           children: [
-            for (int i = 0; i < min(flashCards.length, 5); i++) // Mostrar máximo 5
+            for (int i = 0; i <flashCards.length; i++) // Mostrar máximo 5
               Positioned(
-                top: i * 5,
-                left: i * 5,
+                top: i + 0.0,
+                left: i + 0.0,
                   child: SizedBox(
                     width: 300,
                     height: 400,
@@ -65,7 +65,7 @@ class FlashCardDeck extends StatelessWidget {
     builder: (context, constraints) {
       final cardWidth = min(350.0, constraints.maxWidth * 0.8);
       final cardHeight = cardWidth * 1.25; // relación 4:5
-      final totalCards = min(flashCards.length, 5);
+      final totalCards = flashCards.length;
       final totalWidth = cardWidth + ((totalCards - 1) * (cardWidth * 0.3)); // Ancho total calculado
 
       //Calculamos el desplazamiento inicial para centrar parcialmente
@@ -85,9 +85,9 @@ class FlashCardDeck extends StatelessWidget {
             children: [
               for (int i = 0; i < totalCards; i++)
                 Positioned(
-                  right: i * (cardWidth * 0.15), // Desplazamiento desde la derecha
+                  right: 1+i * (cardWidth * 0.03), // Desplazamiento desde la derecha
                   child: Transform.scale(
-                    scale: 1 - (i * 0.05), // efecto de reducción
+                    scale: 1 - (i * 0.02), // efecto de reducción
                     child: SizedBox(
                       width: cardWidth,
                       height: cardHeight,
