@@ -69,7 +69,7 @@ class FlashCardDeck extends StatelessWidget {
       final totalWidth = cardWidth + ((totalCards - 1) * (cardWidth * 0.3)); // Ancho total calculado
 
       //Calculamos el desplazamiento inicial para centrar parcialmente
-      final initialOffset = constraints.maxWidth*0.2;// 20% del ancho disponibel
+      final initialOffset = constraints.maxWidth*0.3;// 20% del ancho disponibel
 
       return SingleChildScrollView(
         scrollDirection: Axis.horizontal,
@@ -85,9 +85,9 @@ class FlashCardDeck extends StatelessWidget {
             children: [
               for (int i = 0; i < totalCards; i++)
                 Positioned(
-                  right: 1+i * (cardWidth * 0.03), // Desplazamiento desde la derecha
+                  right: i * (cardWidth * 0.02), // Desplazamiento desde la derecha
                   child: Transform.scale(
-                    scale: 1 - (i * 0.02), // efecto de reducción
+                    scale: 1 - (i * 0.015), // efecto de reducción
                     child: SizedBox(
                       width: cardWidth,
                       height: cardHeight,

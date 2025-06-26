@@ -3,6 +3,8 @@ import 'package:path/path.dart';
 import '../models/pf_ing_model.dart';
 
 class DatabaseService {
+
+    static const _databaseName= "database.db";
     static final DatabaseService _instance = DatabaseService._internal();
     static Database? _database;
 
@@ -19,7 +21,7 @@ class DatabaseService {
     }
     Future<Database> _initDatabase() async {
         final dbPath = await getDatabasesPath();
-        final path = join(dbPath, 'pfIng.db');
+        final path = join(dbPath, _databaseName);
 
         return await openDatabase(
             path,
@@ -35,12 +37,22 @@ class DatabaseService {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 definicion TEXT NOT NULL,
                 word TEXT NOT NULL,
+                wordTranslat TEXT,
                 sentence TEXT NOT NULL,
                 learn INTEGER NOT NULL DEFAULT 0,
-                image TEXT,
-                context TEXT,
                 created_at TEXT DEFAULT CURRENT_TIMESTAMP,
                 updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+            )
+        ''');
+        await db.execute('''
+            CREATE TABLE Image(
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                wordId INTEGER,
+                name TEXT,
+                url TEXT,
+                author TEXT,
+                source TEXT,
+                FOREIGN KEY (wordId) REFERENCES pfIng(id) ON DELETE CASCADE
             )
         ''');
     }
@@ -50,7 +62,6 @@ class DatabaseService {
             await db.execute('ALTER TABLE pfIng ADD COLUMN learn INTEGER NOT NULL DEFAULT 0');
         }
     }
-
 
 
     Future<void> insertPfIng(PfIng pfIng) async {

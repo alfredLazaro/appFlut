@@ -9,13 +9,13 @@ class DeepSeekApiService {
   factory DeepSeekApiService() {
     return _instance;
   }
-  static late final String _apiKey; // Nunca la subas a GitHub
+  static late final String _apiKey; 
   static late final String _apiUrl;
   Future<void> initialize() async {
     await dotenv.load(fileName: "assets/.env");
     _apiKey = dotenv.env['API_DEE'] ?? _throwEnvError('API_DEE');
     _apiUrl = dotenv.env['URL_D'] ?? _throwEnvError('URL_D');
-    print("API URL: $_apiUrl"); // Debug
+    //print("API URL: $_apiUrl"); // Debug
   }
 
   Never _throwEnvError(String key) {

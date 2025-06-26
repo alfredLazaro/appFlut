@@ -152,7 +152,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                           onTap: (){
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Autor: aqui pongo el nombre del aotr \n fuente: nombre de fuente'),
+                                content: Text('Autor: aqui pongo el nombre del aotr \nfuente: nombre de fuente'),
                                 duration: const Duration(seconds: 2),
                               ),
                             );

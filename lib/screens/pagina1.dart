@@ -78,8 +78,8 @@ class _Pagina1State extends State<Pagina1> {
       word: word,
       sentence: data['example'] ?? '',
       learn: 0,
-      imageUrl: priImg['url']['regular'],
-      context: "",
+      //imageUrl: priImg['url']['regular'],
+      wordTranslat: "",
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );

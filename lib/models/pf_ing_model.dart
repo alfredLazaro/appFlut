@@ -5,7 +5,7 @@ class PfIng{
     final String sentence;
     int learn;
     String? imageUrl = 'assets/img_defecto.jpg';
-    String? context;
+    String wordTranslat;
     String createdAt;
     String updatedAt;
 
@@ -16,9 +16,9 @@ class PfIng{
         required this.sentence,
         required this.learn,
         this.imageUrl = 'assets/img_defecto.jpg',
-        this.context,
+        required this.wordTranslat,
         required this.createdAt,
-        required this.updatedAt,
+        required this.updatedAt, 
     });
 
     PfIng copyWith({
@@ -28,7 +28,7 @@ class PfIng{
         String? sentence,
         int? learn,
         String? imageUrl,
-        String? context,
+        String? wordTranslat,
         String? createdAt,
         String? updatedAt,
       }) {
@@ -39,7 +39,7 @@ class PfIng{
           sentence: sentence ?? this.sentence,
           learn: learn ?? this.learn,
           imageUrl: imageUrl ?? this.imageUrl,
-          context: context ?? this.context,
+          wordTranslat: wordTranslat ?? this.wordTranslat,
           createdAt: createdAt ?? this.createdAt,
           updatedAt: updatedAt ?? this.updatedAt,
         );
@@ -53,7 +53,7 @@ class PfIng{
             sentence: map['sentence'],
             learn: map['learn'],
             imageUrl: map['image'],
-            context: map['context'],
+            wordTranslat: map['wordTranslat'],
             createdAt: map['created_at'],
             updatedAt: map['updated_at'],
         );
@@ -66,7 +66,7 @@ class PfIng{
             'sentence':sentence,
             'learn':learn,
             'image':imageUrl,
-            'context':context,
+            'wordTranslat':wordTranslat,
             'created_at': createdAt,
             'updated_at': updatedAt,
         };
@@ -79,7 +79,7 @@ class PfIng{
         sentence: json['sentence'],
         learn: json['learn'],
         imageUrl: json['image'],
-        context: json['context'],
+        wordTranslat: json['wordTranslat'],
         createdAt: json['created_at'],
         updatedAt: json['updated_at'],
       );
