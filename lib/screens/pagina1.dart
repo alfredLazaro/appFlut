@@ -8,6 +8,8 @@ import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
 import 'package:logger/logger.dart';
 import 'package:first_app/services/apiImage.dart';
+import '../widgets/Dialog_inform.dart';
+import 'package:first_app/dao/pf_ing_dao.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -76,14 +78,16 @@ class _Pagina1State extends State<Pagina1> {
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: word,
+      wordTranslat: "",
       sentence: data['example'] ?? '',
       learn: 0,
       //imageUrl: priImg['url']['regular'],
-      wordTranslat: "",
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );
-    await DatabaseService().insertPfIng(newWord);
+    //await DatabaseService().insertPfIng(newWord);
+    final pfIngDao = PfingDao();
+    await pfIngDao.insertWord(newWord);
     _captWord.clear();
     _loadWords();
 
@@ -206,10 +210,24 @@ class _Pagina1State extends State<Pagina1> {
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _saveWord,
+              onPressed: _saveWord, 
+              /* () async {
+                final defini= await obtenerDatos(_captWord.text);
+                if(defini.isEmpty){
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Por favor escribe la palabra a buscar'),
+                    )
+                  );
+                  return;
+                }
+                //mostrar el dialog 
+                showDialog(context: context, builder: (_) => DialogInform(meanings: [],));
+              }, */
+
               child: const Text('Guardar'),
             ),
-            
+            /////////////////////////////////////////////////////
             const SizedBox(height: 10),
             // Widget modificado
             Expanded(
@@ -260,7 +278,6 @@ class _Pagina1State extends State<Pagina1> {
                       },
                     ),
                   ),
-                  
                   // Controles de paginación
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,

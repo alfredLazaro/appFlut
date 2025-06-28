@@ -4,7 +4,7 @@ class PfIng{
     final String word;
     final String sentence;
     int learn;
-    String? imageUrl = 'assets/img_defecto.jpg';
+    //String? imageUrl = 'assets/img_defecto.jpg';
     String wordTranslat;
     String createdAt;
     String updatedAt;
@@ -15,7 +15,7 @@ class PfIng{
         required this.word,
         required this.sentence,
         required this.learn,
-        this.imageUrl = 'assets/img_defecto.jpg',
+        //this.imageUrl = 'assets/img_defecto.jpg',
         required this.wordTranslat,
         required this.createdAt,
         required this.updatedAt, 
@@ -27,7 +27,7 @@ class PfIng{
         String? definicion,
         String? sentence,
         int? learn,
-        String? imageUrl,
+        //String? imageUrl,
         String? wordTranslat,
         String? createdAt,
         String? updatedAt,
@@ -38,7 +38,7 @@ class PfIng{
           definicion: definicion ?? this.definicion,
           sentence: sentence ?? this.sentence,
           learn: learn ?? this.learn,
-          imageUrl: imageUrl ?? this.imageUrl,
+          //imageUrl: imageUrl ?? this.imageUrl,
           wordTranslat: wordTranslat ?? this.wordTranslat,
           createdAt: createdAt ?? this.createdAt,
           updatedAt: updatedAt ?? this.updatedAt,
@@ -52,7 +52,7 @@ class PfIng{
             word: map['word'],
             sentence: map['sentence'],
             learn: map['learn'],
-            imageUrl: map['image'],
+            //imageUrl: map['image'],
             wordTranslat: map['wordTranslat'],
             createdAt: map['created_at'],
             updatedAt: map['updated_at'],
@@ -65,7 +65,7 @@ class PfIng{
             'word':word,
             'sentence':sentence,
             'learn':learn,
-            'image':imageUrl,
+            //'image':imageUrl,
             'wordTranslat':wordTranslat,
             'created_at': createdAt,
             'updated_at': updatedAt,
@@ -78,7 +78,7 @@ class PfIng{
         word: json['word'],
         sentence: json['sentence'],
         learn: json['learn'],
-        imageUrl: json['image'],
+        //imageUrl: json['image'],
         wordTranslat: json['wordTranslat'],
         createdAt: json['created_at'],
         updatedAt: json['updated_at'],

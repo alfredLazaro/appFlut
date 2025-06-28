@@ -90,7 +90,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   }
 
   Widget _buildFrontSide() {
-    debugPrint('URL de la imagen: ${_word.imageUrl}');
+    debugPrint('URL de la imagen: obtner imag de otra tabla');
       return LayoutBuilder(
         builder: (context, constraints) {
         return Container(
@@ -114,7 +114,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                   children: [
                     //Imagen principal
                       Image.network(
-                        _word.imageUrl ?? "assets/img_defecto.jpg",// no esta definido en el modelo
+                        'datos' ?? "assets/img_defecto.jpg",// no esta definido en el modelo
                         fit: BoxFit.cover,
                         width: double.infinity,
                         errorBuilder: (context, error, stackTrace) {
