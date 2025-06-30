@@ -161,8 +161,13 @@ class _Pagina1State extends State<Pagina1> {
       for (var imag in images) {
         Image_Model img = Image_Model(
           wordId: idWrd, // Asegurarse de que wordId esté presente
-          nameImg: imag['name'] ?? 'Imagen sin nombre',
-          author: imag['author'] ?? 'Autor desconocido',
+          nameImg: imag['description'] ??
+          imag['alt_description']
+           ?? 'Imagen sin nombre',
+          author: (imag['user'] is Map)
+          ? imag['user']['name']
+          : imag['user']
+           ?? 'Autor desconocido',
           url: imag['url']['regular'],
           source: imag['source'] ?? 'Fuente desconocida',
         );

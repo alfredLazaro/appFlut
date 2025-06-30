@@ -73,12 +73,12 @@ class ImageService{
         return{
           'id': photo['id'],
           'url': {
-          'regular':photo['urls']['regular'],
-          'small': photo['urls']['small'],
-          'thumb':photo['urls']['thumb'],
+          'regular':photo['urls']?['regular'] ?? 'https://default-image-url.com',
+          'small': photo['urls']?['small'] ?? 'https://default-image-url.com',
+          'thumb':photo['urls']?['thumb'] ?? 'https://default-image-url.com',
           },
           'user':{
-            'name': photo['user']['name']
+            'name': photo['user']?['name'] ?? 'Autor desconocido'
           },
           'alt_description': photo['alt_description'] ?? 'Imagen de $nImg',
         };
