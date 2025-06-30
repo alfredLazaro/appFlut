@@ -1,4 +1,4 @@
-class Image{
+class Image_Model{
   String? id;
   int? wordId;
   String nameImg;
@@ -6,7 +6,7 @@ class Image{
   String? author;
   String? source;
 
-  Image({
+  Image_Model({
     this.id,
     this.wordId,
     required this.nameImg,
@@ -26,8 +26,8 @@ class Image{
     };
   }
   //crear un objeto desde un map (desde la base de datos)
-  factory Image.fromMap(Map<String,dynamic> map){
-    return Image(
+  factory Image_Model.fromMap(Map<String,dynamic> map){
+    return Image_Model(
       id: map['id'],
       wordId: map['wordId'],
       nameImg: map['nameImg'],

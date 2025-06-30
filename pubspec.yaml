@@ -40,6 +40,7 @@ dependencies:
   speech_to_text: ^6.3.0
   logger: ^1.3.0
   dio: ^5.3.3
+  cached_network_image: ^3.2.3 # Para cargar imágenes desde la red y almacenarlas en caché
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.6

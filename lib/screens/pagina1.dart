@@ -4,14 +4,16 @@ import 'package:flutter/material.dart';
 import 'pagina2.dart';
 import '../services/database_service.dart';
 import '../models/pf_ing_model.dart';
+import '../models/image_model.dart';
 import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart'
     as stt; // Para el reconocimiento de voz
 import 'package:logger/logger.dart';
 import 'package:first_app/services/apiImage.dart';
 import '../widgets/Dialog_inform.dart';
+import '../widgets/Dialog_Image.dart';
 import 'package:first_app/dao/pf_ing_dao.dart';
-
+import 'package:first_app/dao/image_dao.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -71,16 +73,13 @@ class _Pagina1State extends State<Pagina1> {
     });
   }
 
-  Future<void> _saveWord() async {
-    String word = _captWord.text;
-    if (word.isEmpty) return;
+  Future<int> _saveWord(Map<String,dynamic> data) async {
+    /* String word = _captWord.text;
+    if (word.isEmpty) return -1; // Retorna -1 si no hay palabra */
 
-    final data = await obtenerDatos(word);
-    final imgagen = await getImages(word);
-    final priImg = imgagen[0];
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
-      word: word,
+      word: data['word'] ?? _captWord.text,
       wordTranslat: "",
       sentence: data['example'] ?? '',
       learn: 0,
@@ -90,9 +89,10 @@ class _Pagina1State extends State<Pagina1> {
     );
     //await DatabaseService().insertPfIng(newWord);
     final pfIngDao = PfingDao();
-    await pfIngDao.insertWord(newWord);
+    int idWord =await pfIngDao.insertWord(newWord);
     _captWord.clear();
     _loadWords();
+    return idWord;
   }
 
   Future<Map<String, dynamic>> obtenerDatos(String word) async {
@@ -149,7 +149,32 @@ class _Pagina1State extends State<Pagina1> {
       ];
     }
   }
-
+  Future<List<int>> saveImages(
+      List<Map<String, dynamic>> images,int idWrd) async {
+      List<int> savedImages = [];
+    if (images.isEmpty) {
+      loger.d("No hay imágenes para guardar");
+      return savedImages;
+    }
+    try {
+      
+      for (var imag in images) {
+        Image_Model img = Image_Model(
+          wordId: idWrd, // Asegurarse de que wordId esté presente
+          nameImg: imag['name'] ?? 'Imagen sin nombre',
+          author: imag['author'] ?? 'Autor desconocido',
+          url: imag['url']['regular'],
+          source: imag['source'] ?? 'Fuente desconocida',
+        );
+        final savedId = await ImageDao().insertImage(img);
+        savedImages.add(savedId);
+      }
+      return savedImages;
+    } catch (e) {
+      loger.d("Error al guardar imágenes: $e");
+      return [];
+    }
+  }
   Future<void> _updSenten(int id, String newSentence) async {
     final sentence = newSentence.trim();
     if (sentence.isEmpty) return;
@@ -240,6 +265,8 @@ class _Pagina1State extends State<Pagina1> {
             ElevatedButton(
               onPressed: () async {
                 final defini = await meanings(_captWord.text);
+                final List<Map<String, dynamic>> imgagen =await getImages(_captWord.text);
+                int idWord=-1;
                 if (defini.isEmpty) {
                   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                     content: Text('Por favor escribe la palabra a buscar'),
@@ -247,12 +274,44 @@ class _Pagina1State extends State<Pagina1> {
                   return;
                 }
                 //mostrar el dialog
-                showDialog(
+                final Map<String,dynamic>? selectdDefin= await showDialog<Map<String,dynamic>>(
                     context: context,
                     builder: (_) => DefinitionSelector(
                           meanings: defini,
                           
                         ));
+                if (selectdDefin != null) {
+                  selectdDefin['word'] = _captWord.text;
+                //pasar al widgets de selector de imagenes para guardar las imagenes realcionadas a word
+                  final List<Map<String,dynamic>>? priImg = await showDialog<List<Map<String,dynamic>>>(
+                      context: context,
+                      builder: (_) => ImageSelectorDialog(
+                            imageUrls: imgagen,
+                            allowMultipleSelection: false,
+                          ));
+                    idWord =await _saveWord(selectdDefin);
+                    if (idWord != -1 && priImg != null) {
+                      //priImg['wordId'] = idWord; // Asignar el ID de la palabra
+                      final savedImages = await saveImages(priImg,idWord);
+                      if (savedImages.isNotEmpty) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                                'Palabra guardada con ID: $idWord y ${savedImages.length} imagen(es) guardada(s)'),
+                          ),
+                        );
+                      } else {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('No se guardaron imágenes'),
+                          ),
+                        );
+                      }
+                    }
+                  
+                }
+                
+
               },
               child: const Text('Guardar'),
             ),

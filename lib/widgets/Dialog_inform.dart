@@ -134,10 +134,12 @@ class _DefinitionSelectorState extends State<DefinitionSelector> {
                               'partOfSpeech': partOfSpeech,
                               'definition': selectedDef['definition'],
                               'example': selectedDef['example'],
+                              'synonyms': selectedDef['synonyms'] ?? [], // Lista de sinónimos
+                              'antonyms': selectedDef['antonyms'] ?? [],
                             });
                           }
                         : null,
-                    child: Text('Guardar'),
+                    child: Text('siguiente'),
                   ),
                 ],
               ),
