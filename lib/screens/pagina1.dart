@@ -5,18 +5,20 @@ import 'pagina2.dart';
 import '../services/database_service.dart';
 import '../models/pf_ing_model.dart';
 import 'package:flutter/services.dart';
-import 'package:speech_to_text/speech_to_text.dart' as stt; // Para el reconocimiento de voz
+import 'package:speech_to_text/speech_to_text.dart'
+    as stt; // Para el reconocimiento de voz
 import 'package:logger/logger.dart';
 import 'package:first_app/services/apiImage.dart';
 import '../widgets/Dialog_inform.dart';
 import 'package:first_app/dao/pf_ing_dao.dart';
+
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
 }
 
 class _Pagina1State extends State<Pagina1> {
-  final loger=Logger();
+  final loger = Logger();
   final TextEditingController _captWord = TextEditingController();
   //hablar a texto
   late stt.SpeechToText _speech;
@@ -25,8 +27,8 @@ class _Pagina1State extends State<Pagina1> {
   final WordService _wordService = WordService();
 
   //api para imagenes
-  final apiImg=ImageService();
-  //paginacion 
+  final apiImg = ImageService();
+  //paginacion
   int _currentPage = 0;
   final PageController _pageController = PageController();
 
@@ -39,6 +41,7 @@ class _Pagina1State extends State<Pagina1> {
     _loadWords();
     _speech = stt.SpeechToText();
   }
+
   //funcion para iniciar y detener el texto a voz
   void _listen() async {
     if (!_isListening) {
@@ -71,10 +74,10 @@ class _Pagina1State extends State<Pagina1> {
   Future<void> _saveWord() async {
     String word = _captWord.text;
     if (word.isEmpty) return;
-    
+
     final data = await obtenerDatos(word);
-    final imgagen= await getImages(word);
-    final priImg= imgagen[0];
+    final imgagen = await getImages(word);
+    final priImg = imgagen[0];
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: word,
@@ -90,16 +93,15 @@ class _Pagina1State extends State<Pagina1> {
     await pfIngDao.insertWord(newWord);
     _captWord.clear();
     _loadWords();
-
   }
 
-  Future<Map<String,dynamic>> obtenerDatos(String word) async {
-    try{
+  Future<Map<String, dynamic>> obtenerDatos(String word) async {
+    try {
       final value = await _wordService.getWordDefinition(word);
       loger.d("...............servicio diccionario..............");
       loger.d(value);
       return value;
-    }catch(e){
+    } catch (e) {
       loger.d("Error al obtener datos: $e");
       return {
         'definition': 'No se encontró la definición',
@@ -108,24 +110,47 @@ class _Pagina1State extends State<Pagina1> {
     }
   }
 
-  Future<List<Map<String,dynamic>>> getImages(String word) async{
-    try{
-      final value= await apiImg.getMinImg(word);
+  Future<List<Map<String, dynamic>>> meanings(String word) async {
+    try {
+      final value = await _wordService.getAllMeanings(word);
+      loger.d("...............servicio diccionario..............");
+      loger.d(value);
+      return value;
+    } catch (e) {
+      loger.d("Error al obtener significados: $e");
+      return [
+        {
+          'partOfSpeech': 'N/A',
+          'definitions': [
+            {
+              'definition': 'No se encontró la definición',
+              'example': 'No se encontró el ejemplo'
+            }
+          ]
+        }
+      ];
+    }
+  }
+
+  Future<List<Map<String, dynamic>>> getImages(String word) async {
+    try {
+      final value = await apiImg.getMinImg(word);
       loger.d(value[0]);
       return value;
-    }catch(e){
+    } catch (e) {
       loger.d("pagina 1, image not found $e");
       return [
         {
-          'url':{
-            'regular':'assets/img_defecto.jpg',
-            'small':'assets/img_defecto.jpg',
+          'url': {
+            'regular': 'assets/img_defecto.jpg',
+            'small': 'assets/img_defecto.jpg',
           }
         }
       ];
     }
   }
-  Future<void> _updSenten(int id,String newSentence) async {
+
+  Future<void> _updSenten(int id, String newSentence) async {
     final sentence = newSentence.trim();
     if (sentence.isEmpty) return;
 
@@ -133,7 +158,7 @@ class _Pagina1State extends State<Pagina1> {
     try {
       currentWord = _words.firstWhere((w) => w.id == id);
     } catch (_) {
-      currentWord =null;
+      currentWord = null;
       return; // No encontró nada, salimos de la función
     }
 
@@ -144,18 +169,20 @@ class _Pagina1State extends State<Pagina1> {
     await DatabaseService().updatePfIng(updatedWord);
     _loadWords();
   }
+
   void _editSentenceNew(PfIng word) {
     showDialog(
       context: context,
       builder: (context) => EditSentenceDialog(
         initialSentence: word.sentence,
         onUpdate: (newSentence) async {
-          await _updSenten(word.id!,newSentence);
+          await _updSenten(word.id!, newSentence);
           _loadWords(); // Recargar las palabras después de editar
         },
       ),
     );
   }
+
   Future<void> _deleteWord(int id) async {
     await DatabaseService().deletePfIng(id);
     _loadWords(); // Recargar las palabras después de eliminar
@@ -166,12 +193,14 @@ class _Pagina1State extends State<Pagina1> {
       });
     }
   }
+
   void _copySentence(String sentence) {
     Clipboard.setData(ClipboardData(text: sentence));
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text("Texto copiado al portapeles")),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,29 +231,29 @@ class _Pagina1State extends State<Pagina1> {
                   labelText: 'Escribe la palabra',
                   border: const OutlineInputBorder(),
                   suffixIcon: IconButton(
-                    onPressed: _listen, 
-                    icon: Icon(_isListening ? Icons.mic : Icons.mic_none)
-                  ),
+                      onPressed: _listen,
+                      icon: Icon(_isListening ? Icons.mic : Icons.mic_none)),
                 ),
               ),
             ),
             const SizedBox(height: 10),
             ElevatedButton(
-              onPressed: _saveWord, 
-              /* () async {
-                final defini= await obtenerDatos(_captWord.text);
-                if(defini.isEmpty){
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Por favor escribe la palabra a buscar'),
-                    )
-                  );
+              onPressed: () async {
+                final defini = await meanings(_captWord.text);
+                if (defini.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('Por favor escribe la palabra a buscar'),
+                  ));
                   return;
                 }
-                //mostrar el dialog 
-                showDialog(context: context, builder: (_) => DialogInform(meanings: [],));
-              }, */
-
+                //mostrar el dialog
+                showDialog(
+                    context: context,
+                    builder: (_) => DefinitionSelector(
+                          meanings: defini,
+                          
+                        ));
+              },
               child: const Text('Guardar'),
             ),
             /////////////////////////////////////////////////////
@@ -245,9 +274,11 @@ class _Pagina1State extends State<Pagina1> {
                       },
                       itemBuilder: (context, pageIndex) {
                         final startIndex = pageIndex * 3;
-                        final endIndex = (startIndex + 3).clamp(0, _words.length);
-                        final displayedWords = _words.sublist(startIndex, endIndex);
-                        
+                        final endIndex =
+                            (startIndex + 3).clamp(0, _words.length);
+                        final displayedWords =
+                            _words.sublist(startIndex, endIndex);
+
                         return ListView.builder(
                           itemCount: displayedWords.length,
                           itemBuilder: (context, index) {
@@ -264,7 +295,8 @@ class _Pagina1State extends State<Pagina1> {
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.copy),
-                                    onPressed: () => _copySentence(word.sentence),
+                                    onPressed: () =>
+                                        _copySentence(word.sentence),
                                   ),
                                   IconButton(
                                     icon: const Icon(Icons.delete),
@@ -284,7 +316,7 @@ class _Pagina1State extends State<Pagina1> {
                     children: [
                       IconButton(
                         icon: const Icon(Icons.chevron_left),
-                        onPressed: _currentPage > 0 
+                        onPressed: _currentPage > 0
                             ? () => _pageController.previousPage(
                                   duration: const Duration(milliseconds: 300),
                                   curve: Curves.easeInOut,
