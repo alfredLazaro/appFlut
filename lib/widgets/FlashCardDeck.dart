@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:first_app/widgets/EnglishFlashCard.dart';
 import 'package:first_app/models/image_model.dart';
 import 'package:first_app/dao/image_dao.dart';
+import 'package:logger/logger.dart';
 class FlashCardDeck extends StatefulWidget{
   final List<PfIng> flashCards;
   final Color cardColor;
@@ -25,6 +26,7 @@ class FlashCardDeck extends StatefulWidget{
 class _FlashCardDeckState extends State<FlashCardDeck> {
   final Map<int,List<Image_Model>> _imageCache = {}; // Cache para las imágenes
   ImageDao imageDao = ImageDao();
+  Logger logger = Logger();
   @override 
   void initState(){
     super.initState();
@@ -34,7 +36,7 @@ class _FlashCardDeckState extends State<FlashCardDeck> {
     for (final card in widget.flashCards){
       if (card.id != null) {
         final images = await imageDao.getByWordId(card.id!);
-        debugPrint(images[0].url.toString());
+        logger.d('Cargando imágenes para la tarjeta ${card.id}: ${images.length} imágenes encontradas');
         setState(() {
           _imageCache[card.id!] = images; // Guardamos las imágenes en el cache
         });

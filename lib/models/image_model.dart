@@ -1,5 +1,5 @@
 class Image_Model{
-  String? id;
+  int? id;
   int? wordId;
   String name;
   String? url;
@@ -30,7 +30,7 @@ class Image_Model{
     return Image_Model(
       id: map['id'],
       wordId: map['wordId'],
-      name: map['nameImg'],
+      name: map['name'],
       url: map['url'],
       author: map['author'],
       source: map['source']

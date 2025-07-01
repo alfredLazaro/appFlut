@@ -157,7 +157,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                           onTap: (){
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Autor: ${widget.imgsData[0].author} \nfuente: nombre de fuente'),
+                                content: Text('Autor: ${widget.imgsData[0].author} \nfuente: ${widget.imgsData[0].source}'),
                                 duration: const Duration(seconds: 2),
                               ),
                             );
