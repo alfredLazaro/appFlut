@@ -3,9 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:first_app/models/pf_ing_model.dart';
 import 'package:logger/logger.dart';
+import 'package:first_app/models/image_model.dart';
 class EnglishFlashCard extends StatefulWidget {
   //propiedades para personalizar el widget
   final PfIng wordData;
+  final List<Image_Model> imgsData; // Lista de imágenes relacionadas
   final String word;
   final int learn;
   final Color cardColor;
@@ -23,6 +25,7 @@ class EnglishFlashCard extends StatefulWidget {
     required this.onLearned,
     required this.resetLearn,
     required this.testingWord,
+    required this.imgsData,
     this.cardColor = Colors.white,
     this.textColor = Colors.black,
     this.borderRadius = 15.0,
@@ -90,7 +93,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
   }
 
   Widget _buildFrontSide() {
-    debugPrint('URL de la imagen: obtner imag de otra tabla');
+    //debugPrint('URL de la imagen: ${widget.imgsData.isNotEmpty ? widget.imgsData[0].url : 'No image available'}');
       return LayoutBuilder(
         builder: (context, constraints) {
         return Container(
@@ -114,7 +117,9 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                   children: [
                     //Imagen principal
                       Image.network(
-                        'datos' ?? "assets/img_defecto.jpg",// no esta definido en el modelo
+                        widget.imgsData.isNotEmpty && widget.imgsData[0].url != null
+                            ? widget.imgsData[0].url!
+                            : "assets/img_defecto.jpg", // no esta definido en el modelo
                         fit: BoxFit.cover,
                         width: double.infinity,
                         errorBuilder: (context, error, stackTrace) {
@@ -152,7 +157,7 @@ class _EnglishFlasCardState extends State<EnglishFlashCard> {
                           onTap: (){
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
-                                content: Text('Autor: aqui pongo el nombre del aotr \nfuente: nombre de fuente'),
+                                content: Text('Autor: ${widget.imgsData[0].author} \nfuente: nombre de fuente'),
                                 duration: const Duration(seconds: 2),
                               ),
                             );

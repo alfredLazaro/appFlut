@@ -3,8 +3,9 @@ import 'dart:math';
 import 'package:first_app/models/pf_ing_model.dart';
 import 'package:flutter/material.dart';
 import 'package:first_app/widgets/EnglishFlashCard.dart';
-import 'package:flutter/widgets.dart';
-class FlashCardDeck extends StatelessWidget {
+import 'package:first_app/models/image_model.dart';
+import 'package:first_app/dao/image_dao.dart';
+class FlashCardDeck extends StatefulWidget{
   final List<PfIng> flashCards;
   final Color cardColor;
   final void Function(PfIng word) onLearnedTap;
@@ -18,7 +19,28 @@ class FlashCardDeck extends StatelessWidget {
     required this.isLearned,
     this.cardColor = Colors.white, 
   }) : super(key: key);
-
+  @override 
+  State<FlashCardDeck> createState() => _FlashCardDeckState();
+}
+class _FlashCardDeckState extends State<FlashCardDeck> {
+  final Map<int,List<Image_Model>> _imageCache = {}; // Cache para las imágenes
+  ImageDao imageDao = ImageDao();
+  @override 
+  void initState(){
+    super.initState();
+    _loadImagesForCards();
+  }
+  Future<void> _loadImagesForCards() async {
+    for (final card in widget.flashCards){
+      if (card.id != null) {
+        final images = await imageDao.getByWordId(card.id!);
+        debugPrint(images[0].url.toString());
+        setState(() {
+          _imageCache[card.id!] = images; // Guardamos las imágenes en el cache
+        });
+      }
+    }
+  }
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -38,7 +60,7 @@ class FlashCardDeck extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
           children: [
-            for (int i = 0; i <flashCards.length; i++) // Mostrar máximo 5
+            for (int i = 0; i <widget.flashCards.length; i++) // Mostrar máximo 5
               Positioned(
                 top: i + 0.0,
                 left: i + 0.0,
@@ -46,14 +68,15 @@ class FlashCardDeck extends StatelessWidget {
                     width: 300,
                     height: 400,
                     child: EnglishFlashCard(
-                      key: ValueKey(flashCards[i].id),
-                      wordData: flashCards[i],
-                      learn: flashCards[i].learn,
-                      word: flashCards[i].word,
-                      onLearned: () => onLearnedTap(flashCards[i]),
-                      resetLearn: ()=> resetLearn(flashCards[i]),
-                      testingWord: (cad) => isLearned(flashCards[i],cad),//se supone que le envia la palabra desde el card
-                      cardColor: cardColor,
+                      key: ValueKey(widget.flashCards[i].id),
+                      wordData: widget.flashCards[i],
+                      learn: widget.flashCards[i].learn,
+                      word: widget.flashCards[i].word,
+                      onLearned: () => widget.onLearnedTap(widget.flashCards[i]),
+                      resetLearn: ()=> widget.resetLearn(widget.flashCards[i]),
+                      testingWord: (cad) => widget.isLearned(widget.flashCards[i],cad),//se supone que le envia la palabra desde el card
+                      cardColor: widget.cardColor,
+                      imgsData: _imageCache[widget.flashCards[i].id] ?? [], // Pasamos las imágenes del cache
                     ),
                   ),
               ),
@@ -65,7 +88,7 @@ class FlashCardDeck extends StatelessWidget {
     builder: (context, constraints) {
       final cardWidth = min(350.0, constraints.maxWidth * 0.8);
       final cardHeight = cardWidth * 1.25; // relación 4:5
-      final totalCards = flashCards.length;
+      final totalCards = widget.flashCards.length;
       final totalWidth = cardWidth + ((totalCards - 1) * (cardWidth * 0.3)); // Ancho total calculado
 
       //Calculamos el desplazamiento inicial para centrar parcialmente
@@ -92,14 +115,15 @@ class FlashCardDeck extends StatelessWidget {
                       width: cardWidth,
                       height: cardHeight,
                       child: EnglishFlashCard(
-                        key: ValueKey(flashCards[i].id),
-                        wordData: flashCards[i],
-                        learn: flashCards[i].learn,
-                        word: flashCards[i].word,
-                        onLearned: () => onLearnedTap(flashCards[i]),
-                        resetLearn: () => resetLearn(flashCards[i]),
-                        testingWord: (cad) => isLearned(flashCards[i], cad),
-                        cardColor: cardColor,
+                        key: ValueKey(widget.flashCards[i].id),
+                        wordData: widget.flashCards[i],
+                        learn: widget.flashCards[i].learn,
+                        word: widget.flashCards[i].word,
+                        onLearned: () => widget.onLearnedTap(widget.flashCards[i]),
+                        resetLearn: () => widget.resetLearn(widget.flashCards[i]),
+                        testingWord: (cad) => widget.isLearned(widget.flashCards[i], cad),
+                        cardColor: widget.cardColor,
+                        imgsData: _imageCache[widget.flashCards[i].id] ?? [], // Pasamos las imágenes del cache
                       ),
                     ),
                   ),

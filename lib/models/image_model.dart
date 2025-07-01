@@ -1,7 +1,7 @@
 class Image_Model{
   String? id;
   int? wordId;
-  String nameImg;
+  String name;
   String? url;
   String? author;
   String? source;
@@ -9,7 +9,7 @@ class Image_Model{
   Image_Model({
     this.id,
     this.wordId,
-    required this.nameImg,
+    required this.name,
     this.url,
     this.author,
     this.source
@@ -19,7 +19,7 @@ class Image_Model{
     return{
       'id': id,
       'wordId': wordId,
-      'nameImg': nameImg,
+      'name': name,
       'url': url,
       'author': author,
       'source': source
@@ -30,7 +30,7 @@ class Image_Model{
     return Image_Model(
       id: map['id'],
       wordId: map['wordId'],
-      nameImg: map['nameImg'],
+      name: map['nameImg'],
       url: map['url'],
       author: map['author'],
       source: map['source']

@@ -161,7 +161,7 @@ class _Pagina1State extends State<Pagina1> {
       for (var imag in images) {
         Image_Model img = Image_Model(
           wordId: idWrd, // Asegurarse de que wordId esté presente
-          nameImg: imag['description'] ??
+          name: imag['description'] ??
           imag['alt_description']
            ?? 'Imagen sin nombre',
           author: (imag['user'] is Map)
@@ -298,6 +298,7 @@ class _Pagina1State extends State<Pagina1> {
                     if (idWord != -1 && priImg != null) {
                       //priImg['wordId'] = idWord; // Asignar el ID de la palabra
                       final savedImages = await saveImages(priImg,idWord);
+                      loger.d("Imagenes guardadas: $savedImages");
                       if (savedImages.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -315,8 +316,6 @@ class _Pagina1State extends State<Pagina1> {
                     }
                   
                 }
-                
-
               },
               child: const Text('Guardar'),
             ),
