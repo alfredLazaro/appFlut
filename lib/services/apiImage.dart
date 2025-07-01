@@ -80,6 +80,7 @@ class ImageService{
           'user':{
             'name': photo['user']?['name'] ?? 'Autor desconocido'
           },
+          'source': photo['links']?['html'] ?? 'https://unsplash.com',
           'alt_description': photo['alt_description'] ?? 'Imagen de $nImg',
         };
       }).toList();

@@ -14,6 +14,7 @@ import '../widgets/Dialog_inform.dart';
 import '../widgets/Dialog_Image.dart';
 import 'package:first_app/dao/pf_ing_dao.dart';
 import 'package:first_app/dao/image_dao.dart';
+import 'package:first_app/services/transla_servic.dart';
 class Pagina1 extends StatefulWidget {
   @override
   _Pagina1State createState() => _Pagina1State();
@@ -76,14 +77,13 @@ class _Pagina1State extends State<Pagina1> {
   Future<int> _saveWord(Map<String,dynamic> data) async {
     /* String word = _captWord.text;
     if (word.isEmpty) return -1; // Retorna -1 si no hay palabra */
-
+    final Map<String, dynamic> traduc= await TranslateService().translate(data['word'] ?? _captWord.text);
     PfIng newWord = PfIng(
       definicion: data['definition'] ?? 'no hay definicion',
       word: data['word'] ?? _captWord.text,
-      wordTranslat: "",
+      wordTranslat: traduc['translatedText'] ?? 'no hay traduccion',
       sentence: data['example'] ?? '',
       learn: 0,
-      //imageUrl: priImg['url']['regular'],
       createdAt: DateTime.now().toIso8601String(),
       updatedAt: DateTime.now().toIso8601String(),
     );
@@ -298,7 +298,7 @@ class _Pagina1State extends State<Pagina1> {
                     if (idWord != -1 && priImg != null) {
                       //priImg['wordId'] = idWord; // Asignar el ID de la palabra
                       final savedImages = await saveImages(priImg,idWord);
-                      loger.d("Imagenes guardadas: $savedImages");
+                      //loger.d("Imagenes guardadas: $savedImages");
                       if (savedImages.isNotEmpty) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
