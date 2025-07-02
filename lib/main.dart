@@ -1,6 +1,13 @@
+import 'package:first_app/services/deep_ai_service.dart';
 import 'package:flutter/material.dart';
-
-void main() {
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'screens/pagina1.dart';
+//import 'package:sqflite_common_ffi/sqflite_ffi.dart';
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await dotenv.load(fileName: "assets/.env"); //Cargar variables de entorno
+  //sqfliteFfinit();
+  await DeepSeekApiService().initialize(); // Inicializa el servicio de API
   runApp(MyApp());
 }
 
@@ -22,65 +29,12 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Página Principal'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '¡Hola, Mundo!',
-              style: Theme.of(context).textTheme.displayLarge, // headline1 -> displayLarge
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SegundaPagina()),
-                );
-              },
-              child: Text('Ir a la segunda página'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
 
-class SegundaPagina extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Segunda Página'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Text(
-              '¡Bienvenido a la segunda página!',
-              style: TextStyle(
-                fontSize: 24,
-                color: Colors.green,
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: Text('Volver'),
-            ),
-          ],
-        ),
-      ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Pagina1(),//pantalla de inicio
     );
   }
 }
