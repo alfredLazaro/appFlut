@@ -126,10 +126,10 @@ class _Pagina2State extends State<Pagina2> {
                     mini: true, // Tamaño más pequeño
                     heroTag: 'backButton', // Necesario si hay otros FABs
                     onPressed: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back),
                     backgroundColor: Colors.white, // Color de fondo
                     foregroundColor: Colors.black, // Color del icono
                     elevation: 4.0, // Sombra
+                    child: const Icon(Icons.arrow_back),
                   ),
                   const SizedBox(width: 8),
                   Container(
